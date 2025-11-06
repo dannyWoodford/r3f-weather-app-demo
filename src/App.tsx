@@ -6,7 +6,6 @@ import { Leva } from 'leva'
 import { ACESFilmicToneMapping, SRGBColorSpace } from 'three'
 
 import Scene from './3d/Scene'
-import Sidebar from './UI/Sidebar'
 
 // declare module '@react-three/fiber' {
 // 	interface ThreeElements extends ThreeToJSXElements<typeof THREE> { }
@@ -31,7 +30,6 @@ export default function App() {
 				}}
 			/>
 
-			<Sidebar />
 
 			<Canvas
 				// dpr={[1, 2]}

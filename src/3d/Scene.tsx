@@ -1,24 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { OrbitControls, Grid, Environment } from '@react-three/drei'
-import { useControls } from 'leva'
+import React from 'react'
+import { OrbitControls, Grid, Environment, Sphere } from '@react-three/drei'
+// import * as THREE from 'three/webgpu'
+import * as THREE from 'three'
+
 
 import { StatsPanel } from './components/StatsPanel'
-
-import PrimitivesFactory from './components/PrimitivesFactory'
-import TilesRendererComponent from './components/TilesRendererComponent'
-import Raycaster from './components/Raycaster'
 
 export default function Scene() {
 	// const { performance } = useControls('Monitoring', {
 	// 	performance: true,
 	// })
-
-	const [tilesLoaded, setTilesLoaded] = useState(false)
-
-	const tilesLoadedHandler = () => {
-		setTilesLoaded(true)
-	}
-
 
 	return (
 		<>
@@ -41,10 +32,6 @@ export default function Scene() {
 				shadow-mapSize={2048}
 				shadow-bias={-0.001}
 			>
-				{/* helper to visualize light position */}
-				{/* <Sphere args={[1]}>
-          <meshBasicMaterial color={"green"} />
-        </Sphere> */}
 				<orthographicCamera
 					attach="shadow-camera"
 					args={[-40.5, 40.5, 40.5, -40.5, 0.1, 200]}
@@ -53,7 +40,7 @@ export default function Scene() {
 
 			{/* <ambientLight intensity={0.2} /> */}
 
-			{/* <Grid
+			<Grid
 				position={[0, 0, 0]}
 				args={[70, 70]}
 				cellSize={0.5}
@@ -67,12 +54,13 @@ export default function Scene() {
 				followCamera={false}
 				infiniteGrid={true}
 				side={THREE.DoubleSide}
-			/> */}
+			/>
 
-			<PrimitivesFactory />
-			<TilesRendererComponent groupPos={[0, 0, 0]} tilesLoadedHandler={tilesLoadedHandler} />
+			{/* helper to visualize light position */}
+			<Sphere args={[1]}>
+				<meshPhysicalMaterial color={"green"} />
+			</Sphere>
 
-			{/* <Raycaster tilesLoaded={tilesLoaded} /> */}
 		</>
 	)
 }
