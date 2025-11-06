@@ -1,9 +1,7 @@
 // import * as THREE from 'three/webgpu'
 // import * as TSL from 'three/tsl'
 import { Canvas, extend } from '@react-three/fiber'
-
 import { Leva } from 'leva'
-import { ACESFilmicToneMapping, SRGBColorSpace } from 'three'
 
 import Scene from './3d/Scene'
 
