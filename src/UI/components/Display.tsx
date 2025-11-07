@@ -1,22 +1,33 @@
+import useWeather from '../../hooks/useWeather'
+
 const Display = () => {
+	const { data, status, location } = useWeather({ auto: true })
+
+	const temp = data?.now.temperatureC
+	const humidity = data?.now.humidityPct
+	const windMs = data?.now.windSpeedMs
+	const windMph = typeof windMs === 'number' ? (windMs * 2.23694) : null
+
+	const headerTime = data?.now.time
+		? new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(data.now.time)
+		: '—'
 	return (
 		<section className='weather-overlay' aria-label='Weather overlay'>
 			<div className='weather-overlay__content'>
 				<header className='weather-header card card--glass'>
-					<div className='weather-header__location'>San Francisco, CA</div>
-					<time className='weather-header__time'>Fri 3:15 PM</time>
+					<div className='weather-header__location'>{location.label}</div>
+					<time className='weather-header__time'>{headerTime}</time>
 				</header>
 
 				<main className='weather-main card card--glass'>
-					<div className='weather-main__temp'>72°</div>
-					<div className='weather-main__condition'>Sunny</div>
+					<div className='weather-main__temp'>{typeof temp === 'number' ? Math.round((temp * 9) / 5 + 32) : '—'}°</div>
+					<div className='weather-main__condition'>{status === 'loading' ? 'Loading…' : 'Updated'}</div>
 				</main>
 
 				<section className='weather-details card card--glass' aria-label='Current conditions'>
-					<div className='weather-details__item'>High: 75°</div>
-					<div className='weather-details__item'>Low: 58°</div>
-					<div className='weather-details__item'>Humidity: 42%</div>
-					<div className='weather-details__item'>Wind: 6 mph NW</div>
+					<div className='weather-details__item'>Lat/Lon: {location.latitude.toFixed(3)}, {location.longitude.toFixed(3)}</div>
+					<div className='weather-details__item'>Humidity: {typeof humidity === 'number' ? Math.round(humidity) + '%' : '—'}</div>
+					<div className='weather-details__item'>Wind: {typeof windMph === 'number' ? Math.round(windMph) + ' mph' : '—'}</div>
 				</section>
 			</div>
 		</section>
