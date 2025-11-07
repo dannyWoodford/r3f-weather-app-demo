@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { fetchForecast } from '../lib/openMeteo'
-import useWeatherStore from '../store/weather'
+import useWeatherStore from '../store/GlobalState'
 
 export function useWeather({ auto = true } = {}) {
 	const { location, status, data, error, setLoading, setSuccess, setError } = useWeatherStore()

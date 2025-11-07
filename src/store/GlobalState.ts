@@ -6,6 +6,8 @@ type WeatherStore = WeatherState & {
 	setLoading: () => void
 	setSuccess: (data: WeatherData) => void
 	setError: (message: string) => void
+	hasEnteredApp: boolean
+	setHasEnteredApp: (value: boolean) => void
 }
 
 export const useWeatherStore = create<WeatherStore>((set) => ({
@@ -14,6 +16,7 @@ export const useWeatherStore = create<WeatherStore>((set) => ({
 	status: 'idle',
 	error: null,
 	lastUpdated: null,
+	hasEnteredApp: false,
 
 	setLocation: ({ latitude, longitude, label }) =>
 		set((state) => ({
@@ -27,6 +30,7 @@ export const useWeatherStore = create<WeatherStore>((set) => ({
 	setLoading: () => set({ status: 'loading', error: null }),
 	setSuccess: (data) => set({ data, status: 'success', error: null, lastUpdated: Date.now() }),
 	setError: (message) => set({ status: 'error', error: message }),
+	setHasEnteredApp: (value) => set({ hasEnteredApp: value }),
 }))
 
 export default useWeatherStore

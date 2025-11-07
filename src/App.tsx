@@ -5,6 +5,10 @@ import { Leva } from 'leva'
 
 import Scene from './3d/Scene'
 import UI from './UI/index'
+import OnboardingOverlay from './UI/components/OnboardingOverlay'
+
+import useWeatherStore from './store/GlobalState'
+
 
 // declare module '@react-three/fiber' {
 // 	interface ThreeElements extends ThreeToJSXElements<typeof THREE> { }
@@ -13,21 +17,26 @@ import UI from './UI/index'
 // extend(THREE as any)
 
 export default function App() {
+	const { hasEnteredApp } = useWeatherStore()
+
 	return (
 		<>
 			<Leva
 				collapsed={false}
-				oneLineLabels={false}
-				flat={true}
+				// oneLineLabels={false}
+				// flat={true}
+				hidden={!hasEnteredApp}
 				theme={{
-					sizes: {
-						titleBarHeight: '28px',
-					},
-					fontSizes: {
-						root: '10px',
-					},
+					// sizes: {
+					// 	titleBarHeight: '28px',
+					// },
+					// fontSizes: {
+					// 	root: '10px',
+					// },
 				}}
 			/>
+
+			<OnboardingOverlay />
 
 			<UI />
 
