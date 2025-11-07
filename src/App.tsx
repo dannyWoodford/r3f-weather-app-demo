@@ -4,6 +4,7 @@ import { Canvas, extend } from '@react-three/fiber'
 import { Leva } from 'leva'
 
 import Scene from './3d/Scene'
+import UI from './UI/index'
 
 // declare module '@react-three/fiber' {
 // 	interface ThreeElements extends ThreeToJSXElements<typeof THREE> { }
@@ -28,6 +29,7 @@ export default function App() {
 				}}
 			/>
 
+			<UI />
 
 			<Canvas
 				// dpr={[1, 2]}
