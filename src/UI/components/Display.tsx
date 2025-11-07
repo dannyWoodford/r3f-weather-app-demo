@@ -1,4 +1,5 @@
 import useWeather from '../../hooks/useWeather'
+import LocationClock from './LocationClock'
 
 const Display = () => {
 	const { data, status, location } = useWeather({ auto: true })
@@ -8,15 +9,16 @@ const Display = () => {
 	const windMs = data?.now.windSpeedMs
 	const windMph = typeof windMs === 'number' ? (windMs * 2.23694) : null
 
-	const headerTime = data?.now.time
-		? new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(data.now.time)
-		: '—'
 	return (
 		<section className='weather-overlay' aria-label='Weather overlay'>
 			<div className='weather-overlay__content'>
 				<header className='weather-header card card--glass'>
 					<div className='weather-header__location'>{location.label}</div>
-					<time className='weather-header__time'>{headerTime}</time>
+					{data ? (
+						<LocationClock className='weather-header__time' utcOffsetSeconds={data.utcOffsetSeconds} />
+					) : (
+						<time className='weather-header__time'>—</time>
+					)}
 				</header>
 
 				<main className='weather-main card card--glass'>

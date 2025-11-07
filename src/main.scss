@@ -42,18 +42,20 @@ body {
   position: fixed;
   inset: 0;
   z-index: 10;
-  pointer-events: none; /* allow interacting with 3D scene behind */
+  // pointer-events: none; /* allow interacting with 3D scene behind */
   color: #fff;
   background: transparent;
 
   /* Layout helper for spacing within viewport */
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+	flex-direction: column;
+	align-self: end;
+	justify-self: flex-start;
   padding: 16px;
 
   &__content {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+    display: flex;
+		flex-direction: column;
     min-height: 100%;
     gap: 16px;
   }
@@ -88,13 +90,13 @@ body {
   padding: 24px;
 
   &__temp {
-    font-size: clamp(64px, 14vw, 160px);
+    font-size: clamp(24px, 14vw, 44px);
     font-weight: 700;
     line-height: 0.9;
   }
 
   &__condition {
-    font-size: clamp(18px, 3.5vw, 32px);
+    font-size: clamp(9px, 3.5vw, 16px);
     font-weight: 500;
     opacity: 0.95;
   }
@@ -116,14 +118,14 @@ body {
     padding: 12px 14px;
     backdrop-filter: blur(8px) saturate(120%);
     -webkit-backdrop-filter: blur(8px) saturate(120%);
-    pointer-events: none; /* keep scene interactive */
+    // pointer-events: none; /* keep scene interactive */
   }
 }
 
 /* Frosted glass card utility */
 .card {
   border-radius: 16px;
-  pointer-events: none; /* do not block the 3D scene */
+  // pointer-events: none; /* do not block the 3D scene */
 }
 
 .card--glass {
