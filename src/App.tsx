@@ -42,10 +42,9 @@ export default function App() {
 				// 	return renderer
 				// }}
 				camera={{
-					fov: 55,
-					near: 0.1,
-					// far: 500,
-					far: 10000,
+					fov: 70,
+					// near: 0.1,
+					far: 1000,
 					position: [0, 4, 9],
 				}}
 				shadows
