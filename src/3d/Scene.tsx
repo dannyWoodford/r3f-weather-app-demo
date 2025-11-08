@@ -1,11 +1,13 @@
 import React from 'react'
-import { OrbitControls, Grid, Environment, Sphere } from '@react-three/drei'
+import { OrbitControls, Grid, Environment, Sphere, Stats } from '@react-three/drei'
 // import * as THREE from 'three/webgpu'
 import * as THREE from 'three'
 
 
-import { StatsPanel } from './components/StatsPanel'
-import SplatComponent from './components/SplatComponent'
+// import { StatsPanel } from './components/StatsPanel'
+// import SplatComponent from './components/SplatComponent'
+import EnvironmentEffects from './components/EnvironmentEffects'
+import TilesRendererComponent from './components/TilesRendererComponent'
 
 export default function Scene() {
 	// const { performance } = useControls('Monitoring', {
@@ -14,19 +16,23 @@ export default function Scene() {
 
 	return (
 		<>
-			<StatsPanel />
+			{/* <StatsPanel /> */}
+			{/* <Stats className='stats'/> */}
 
 			{/* <Environment
-				preset="night"
-				background={true}
-				backgroundBlurriness={0} // optional blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
-				backgroundIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
-				environmentIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+				// preset="night"
+				// background={true}
+				// backgroundBlurriness={0} // optional blur factor between 0 and 1 (default: 0, only works with three 0.146 and up)
+				// backgroundIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+				// environmentIntensity={1} // optional intensity factor (default: 1, only works with three 0.163 and up)
+				preset="sunset"
+				backgroundBlurriness={0.9}
+				environmentIntensity={1}
 			/> */}
 
-			<OrbitControls makeDefault />
+			{/* <OrbitControls makeDefault /> */}
 
-			<directionalLight
+			{/* <directionalLight
 				position={[11, 36, -32]}
 				castShadow
 				intensity={1.5}
@@ -37,7 +43,7 @@ export default function Scene() {
 					attach="shadow-camera"
 					args={[-40.5, 40.5, 40.5, -40.5, 0.1, 200]}
 				/>
-			</directionalLight>
+			</directionalLight> */}
 
 			{/* <ambientLight intensity={0.2} /> */}
 
@@ -58,12 +64,13 @@ export default function Scene() {
 			/> */}
 
 			{/* helper to visualize light position */}
-			{/* <Sphere args={[1]}>
-				<meshPhysicalMaterial color={"green"} />
+			{/* <Sphere args={[12742000]}>
+				<meshPhysicalMaterial color={"red"} />
 			</Sphere> */}
 
-			<SplatComponent />
-
+			{/* <SplatComponent /> */}
+			{/* <EnvironmentEffects /> */}
+			<TilesRendererComponent />
 		</>
 	)
 }

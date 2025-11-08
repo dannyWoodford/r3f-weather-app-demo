@@ -52,13 +52,24 @@ export default function App() {
 				// 	await renderer.init()
 				// 	return renderer
 				// }}
+				// camera={{
+				// 	fov: 70,
+				// 	// near: 0.1,
+				// 	far: 1000,
+				// 	position: [0, 4, 9],
+				// }}
+				// shadows
+				// gl={{
+				// 	depth: false,
+				// 	toneMappingExposure: 10
+				// }}
 				camera={{
-					fov: 70,
-					// near: 0.1,
-					far: 1000,
-					position: [0, 4, 9],
+					near: 1,
+					far: 4e5,
+					// See the Clouds/Basic story for deriving ECEF coordinates and rotation.
+					position: [4529893.894855564, 2615333.425024031, 3638042.815326614],
+					rotation: [0.6423512931563148, -0.2928348796035058, -0.8344824769956042]
 				}}
-				shadows
 			>
 				<Scene />
 			</Canvas>
