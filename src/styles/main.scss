@@ -8,7 +8,9 @@
 @use '4-pages/onboarding';
 
 .stats {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  // position: absolute !important;
+  right: 0 !important;
+  bottom: 0 !important;
+	top: auto !important;
+	left: auto !important;
 }

@@ -11,7 +11,7 @@ type WeatherStore = WeatherState & {
 }
 
 export const useWeatherStore = create<WeatherStore>((set) => ({
-	location: { label: 'San Francisco, CA', latitude: 37.7749, longitude: -122.4194 },
+	location: { label: 'New York City, NY, USA', latitude: 40.704931, longitude: -74.012996 },
 	data: null,
 	status: 'idle',
 	error: null,

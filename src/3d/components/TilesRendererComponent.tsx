@@ -1,15 +1,8 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react'
-// import * as THREE from 'three/webgpu'
-import * as THREE from 'three'
-import { useControls } from 'leva'
-
 import {
 	TilesPlugin,
 	TilesRenderer,
 	TilesAttributionOverlay,
 	GlobeControls,
-	EastNorthUpFrame,
-	CompassGizmo,
 } from '3d-tiles-renderer/r3f';
 // Plugins
 import {
@@ -18,20 +11,22 @@ import {
 	TileCompressionPlugin,
 	TilesFadePlugin,
 	GLTFExtensionsPlugin,
-	ReorientationPlugin
 } from '3d-tiles-renderer/plugins';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 const dracoLoader = new DRACOLoader().setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 
-
 export default function TilesRendererComponent() {
 	const assetId = 2275207
+	
+	// night
+	// const assetId = 3812
 
 	return (
 		<group
 		>
-			<TilesRenderer group={{ rotation: [- Math.PI / 2, 0, 0] }}>
+			<TilesRenderer 
+			>
 				<TilesPlugin plugin={CesiumIonAuthPlugin} args={{ apiToken: import.meta.env.VITE_ION_KEY, assetId: assetId, autoRefreshToken: true }} />
 				<TilesPlugin plugin={GLTFExtensionsPlugin} dracoLoader={dracoLoader} />
 				<TilesPlugin plugin={TileCompressionPlugin} />
@@ -39,20 +34,15 @@ export default function TilesRendererComponent() {
 				<TilesPlugin plugin={TilesFadePlugin} />
 
 				{/* Controls */}
-				<GlobeControls enableDamping={true} />
+				<GlobeControls 
+					enableDamping={true} 
+					adjustHeight={false}
+					maxAltitude={Math.PI * 0.55} // Permit grazing angles
+					// maxDistance={7500}
+					/>
 
 				{/* Attributions */}
-				<TilesAttributionOverlay />
-
-				{/* Pointer to NASA JPL */}
-				{/* <EastNorthUpFrame lat={34.2013 * MathUtils.DEG2RAD} lon={- 118.1714 * MathUtils.DEG2RAD} height={350}>
-					<Pointer />
-				</EastNorthUpFrame>; */}
-
-				{/* Add compass gizmo */}
-				{/* <CompassGizmo /> */}
-
-				{/* <TilesLoadingBar /> */}
+				{/* <TilesAttributionOverlay /> */}
 			</TilesRenderer>
 		</group>
 	)
