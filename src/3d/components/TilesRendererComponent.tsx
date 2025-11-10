@@ -33,6 +33,10 @@ export default function TilesRendererComponent() {
 				<TilesPlugin plugin={UpdateOnChangePlugin} />
 				<TilesPlugin plugin={TilesFadePlugin} />
 
+
+				{/* Attributions */}
+				{/* <TilesAttributionOverlay /> */}
+				
 				{/* Controls */}
 				<GlobeControls 
 					enableDamping={true} 
@@ -40,9 +44,6 @@ export default function TilesRendererComponent() {
 					maxAltitude={Math.PI * 0.55} // Permit grazing angles
 					// maxDistance={7500}
 					/>
-
-				{/* Attributions */}
-				{/* <TilesAttributionOverlay /> */}
 			</TilesRenderer>
 		</group>
 	)

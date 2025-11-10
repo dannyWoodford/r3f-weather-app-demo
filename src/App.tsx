@@ -2,6 +2,8 @@
 // import * as TSL from 'three/tsl'
 import { Canvas, extend } from '@react-three/fiber'
 import { Leva } from 'leva'
+import { ACESFilmicToneMapping, SRGBColorSpace } from 'three'
+
 
 import Scene from './3d/Scene'
 import UI from './UI/index'
@@ -41,7 +43,7 @@ export default function App() {
 			<UI />
 
 			<Canvas
-				dpr={[1, 2]}
+				// dpr={[1, 2]}
 				// gl={{
 				// 	antialias: true,
 				// 	toneMapping: ACESFilmicToneMapping,
@@ -52,13 +54,14 @@ export default function App() {
 				// 	await renderer.init()
 				// 	return renderer
 				// }}
+				
 				// shadows
 				gl={{
 					depth: false,
 					toneMappingExposure: 15,
 				}}
 				// camera={{
-				// 	near: 0.1,
+				// 	near: 10,
 				// 	far: 4e5,
 				// 	// See the Clouds/Basic story for deriving ECEF coordinates and rotation.
 				// 	// position: [4529893.894855564, 2615333.425024031, 3638042.815326614],

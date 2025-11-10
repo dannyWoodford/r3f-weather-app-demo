@@ -1,3 +1,13 @@
+
+Please Help!
+
+The shadows cast by the Clouds are too dark, and when I rotate the camera towards the sun everything goes dark. Can anyone help me find out what I'm doing wrong. 
+
+https://github.com/user-attachments/assets/466637f0-d60f-4a8c-876c-4b50f0b4264e
+
+Here's the code for the Clouds, Atmosphere, Effects...
+
+```
 import React, { useRef, Fragment, useState } from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
@@ -8,16 +18,17 @@ import {
 	EffectMaterial,
 	type EffectComposer as EffectComposerImpl
 } from 'postprocessing'
-// import { EffectComposer } from '../helpers/EffectComposer'
 
 import {
+	Sky,
+	SkyLight,
+  SunLight,
   AerialPerspective,
   Atmosphere,
   type AtmosphereApi,
 } from '@takram/three-atmosphere/r3f'
 import {
 	type CloudsQualityPreset,
-	type CloudsEffect,
 } from '@takram/three-clouds'
 import { Clouds } from '@takram/three-clouds/r3f'
 import { LensFlare, Dithering, Depth, Normal } from '@takram/three-geospatial-effects/r3f'
@@ -62,7 +73,7 @@ const EnvironmentEffects = () => {
 			animate: true,
 			coverage: { value: defaultCoverage ?? 0.3, min: 0, max: 1, step: 0.01 },
 			qualityPreset: {
-				value: 'high' as const,
+				value: 'ultra' as const,
 				options: [
 					'low',
 					'medium',
@@ -110,8 +121,7 @@ const EnvironmentEffects = () => {
   return (
     <Atmosphere
       ref={atmosphereRef}
-			correctAltitude={correctAltitude}
-      // date={Date.parse('2025-11-08T15:00:00Z')}
+      correctAltitude={true}
     >
 			<TilesRendererComponent />
 			<GlobeCamera />
@@ -149,7 +159,7 @@ const EnvironmentEffects = () => {
 								sunLight={sunLight}
 								skyLight={skyLight}
                 correctGeometricError={correctGeometricError}
-                albedoScale={1 / Math.PI}
+                albedoScale={2 / Math.PI}
               />
             </>
           )}
@@ -174,3 +184,68 @@ const EnvironmentEffects = () => {
 }
 
 export default EnvironmentEffects
+
+```
+
+
+
+
+
+<br>
+<br>
+
+
+
+
+
+And here's the code for the TileRenderer, in case that's important. 
+```
+import {
+	TilesPlugin,
+	TilesRenderer,
+	TilesAttributionOverlay,
+	GlobeControls,
+} from '3d-tiles-renderer/r3f';
+// Plugins
+import {
+	CesiumIonAuthPlugin,
+	UpdateOnChangePlugin,
+	TileCompressionPlugin,
+	TilesFadePlugin,
+	GLTFExtensionsPlugin,
+} from '3d-tiles-renderer/plugins';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+
+const dracoLoader = new DRACOLoader().setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+
+export default function TilesRendererComponent() {
+	const assetId = 2275207
+
+	return (
+		<group
+		>
+			<TilesRenderer 
+			>
+				<TilesPlugin plugin={CesiumIonAuthPlugin} args={{ apiToken: import.meta.env.VITE_ION_KEY, assetId: assetId, autoRefreshToken: true }} />
+				<TilesPlugin plugin={GLTFExtensionsPlugin} dracoLoader={dracoLoader} />
+				<TilesPlugin plugin={TileCompressionPlugin} />
+				<TilesPlugin plugin={UpdateOnChangePlugin} />
+				<TilesPlugin plugin={TilesFadePlugin} />
+
+
+				{/* Attributions */}
+				{/* <TilesAttributionOverlay /> */}
+				
+				{/* Controls */}
+				<GlobeControls 
+					enableDamping={true} 
+					adjustHeight={false}
+					maxAltitude={Math.PI * 0.55} // Permit grazing angles
+					// maxDistance={7500}
+					/>
+			</TilesRenderer>
+		</group>
+	)
+}
+
+```
