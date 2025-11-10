@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { Vector3 } from 'three'
 import type { WeatherData, WeatherState, Coordinates } from '../types/weather'
 
 type WeatherStore = WeatherState & {
@@ -8,6 +9,8 @@ type WeatherStore = WeatherState & {
 	setError: (message: string) => void
 	hasEnteredApp: boolean
 	setHasEnteredApp: (value: boolean) => void
+	locationVector: Vector3
+	setLocationVector: (value: Vector3) => void
 }
 
 export const useWeatherStore = create<WeatherStore>((set) => ({
@@ -17,6 +20,7 @@ export const useWeatherStore = create<WeatherStore>((set) => ({
 	error: null,
 	lastUpdated: null,
 	hasEnteredApp: false,
+	locationVector: new Vector3(0, 0, 0),
 
 	setLocation: ({ latitude, longitude, label }) =>
 		set((state) => ({
@@ -31,6 +35,7 @@ export const useWeatherStore = create<WeatherStore>((set) => ({
 	setSuccess: (data) => set({ data, status: 'success', error: null, lastUpdated: Date.now() }),
 	setError: (message) => set({ status: 'error', error: message }),
 	setHasEnteredApp: (value) => set({ hasEnteredApp: value }),
+	setLocationVector: (value) => set({ locationVector: value }),
 }))
 
 export default useWeatherStore

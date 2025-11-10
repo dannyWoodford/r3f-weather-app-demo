@@ -1,4 +1,4 @@
-import React, { useRef, Fragment, useState } from 'react'
+import React, { useRef, Fragment, useState, Suspense } from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 
@@ -27,6 +27,9 @@ import { usePovControls } from '../helpers/usePovControls'
 
 import TilesRendererComponent from './TilesRendererComponent'
 import GlobeCamera from './GlobeCamera'
+
+import CloudText from './text/CloudText'
+
 
 const EnvironmentEffects = () => {
 	const atmosphereRef = useRef<AtmosphereApi>(null)
@@ -115,6 +118,10 @@ const EnvironmentEffects = () => {
     >
 			<TilesRendererComponent />
 			<GlobeCamera />
+
+			<Suspense fallback={null}>
+				<CloudText />
+			</Suspense>
 
 			<EffectComposer 
 				ref={composerRef} 

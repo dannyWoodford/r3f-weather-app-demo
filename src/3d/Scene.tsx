@@ -8,14 +8,15 @@ import * as THREE from 'three'
 
 // import { StatsPanel } from './components/StatsPanel'
 // import SplatComponent from './components/SplatComponent'
-import TilesRendererComponent from './components/TilesRendererComponent'
+// import TilesRendererComponent from './components/TilesRendererComponent'
+// import GlobeCamera from './components/GlobeCamera'
 import EnvironmentEffects from './components/EnvironmentEffects'
-import GlobeCamera from './components/GlobeCamera'
+import CloudText from './components/text/CloudText'
 
 export default function Scene() {
 
 	return (
-		<>
+		<group>
 			{/* <OrbitControls makeDefault /> */}
 			
 			{/* <Environment
@@ -39,10 +40,12 @@ export default function Scene() {
 
 			{/* <SplatComponent /> */}
 
+			{/* <CloudText /> */}
+
 			{/* <TilesRendererComponent /> */}
 			
 			{/* <GlobeCamera /> */}
 			<EnvironmentEffects />
-		</>
+		</group>
 	)
 }
