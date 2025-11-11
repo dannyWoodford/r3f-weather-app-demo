@@ -14,17 +14,15 @@ const GlobeCamera = () => {
 	const latitude = useWeatherStore(s => s.location.latitude)
 	const longitude = useWeatherStore(s => s.location.longitude)
 	const initHeading = 65
-	const initPitch = -40
-	const distance = 1265
+	const initPitch = -37
+	const distance = 2055
 
 	const camera = useThree(({ camera }) => camera)
 	usePovControls(camera, { collapsed: false })
 
-	const { heading, pitch, fov: fovValue } = useControls(
+	const { fov: fovValue } = useControls(
 		'globe camera',
 		{
-			heading: { value: initHeading ?? initHeading, min: 0, max: 200, step: 1 },
-			pitch: { value: initPitch ?? initPitch, min: -200, max: 200, step: 1 },
 			fov: { value: 70, min: 20, max: 120, step: 1 },
 		},
 		{ collapsed: false }
@@ -32,7 +30,7 @@ const GlobeCamera = () => {
 	useLayoutEffect(() => {
 		const getLocVec = new Geodetic(radians(longitude), radians(latitude)).toECEF()
 
-		new PointOfView(distance, radians(heading), radians(pitch)).decompose(
+		new PointOfView(distance, radians(initHeading), radians(initPitch)).decompose(
 			getLocVec,
 			camera.position,
 			camera.quaternion,
@@ -40,7 +38,7 @@ const GlobeCamera = () => {
 		)
 
 		setLocationVector(getLocVec)
-	}, [longitude, latitude, heading, pitch, distance, camera])
+	}, [longitude, latitude, initHeading, initPitch, distance, camera])
 
 	// Update Camera FOV
 	useEffect(() => {
