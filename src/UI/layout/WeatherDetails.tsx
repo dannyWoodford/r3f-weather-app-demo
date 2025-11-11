@@ -1,7 +1,7 @@
 import useWeather from '../../hooks/useWeather'
-import LocationClock from './LocationClock'
+import LocationClock from '../components/LocationClock'
 
-const Display = () => {
+const WeatherDetails = () => {
 	const { data, status, location } = useWeather({ auto: true })
 
 	const temp = data?.now.temperatureC
@@ -36,4 +36,4 @@ const Display = () => {
 	)
 }
 
-export default Display
+export default WeatherDetails

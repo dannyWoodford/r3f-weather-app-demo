@@ -5,8 +5,7 @@ import { Canvas, extend } from '@react-three/fiber'
 
 import LevaConfig from './LevaConfig'
 import Scene from './3d/Scene'
-import UI from './UI/index'
-import OnboardingOverlay from './UI/components/OnboardingOverlay'
+import UIContainer from './UI/UIContainer'
 
 // declare module '@react-three/fiber' {
 // 	interface ThreeElements extends ThreeToJSXElements<typeof THREE> { }
@@ -33,9 +32,7 @@ export default function App() {
 		<>
 			<LevaConfig />
 
-			<OnboardingOverlay />
-
-			<UI />
+			<UIContainer />
 
 			<Canvas
 				dpr={[1, 2]}

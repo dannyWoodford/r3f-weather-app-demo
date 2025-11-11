@@ -6,9 +6,9 @@ import {
 } from '@takram/three-atmosphere/r3f'
 // import { OrbitControls, Stats, Sphere, Environment } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { Perf } from 'r3f-perf'
 
 // import SplatComponent from './components/SplatComponent'
+import Stats from './components/Stats'
 import TilesRendererComponent from './components/TilesRendererComponent'
 import GlobeCamera from './components/GlobeCamera'
 import EnvironmentEffects from './components/EnvironmentEffects'
@@ -29,7 +29,7 @@ export default function Scene() {
 
 	return (
 		<group>
-			<Perf className='stats' />
+			<Stats />
 
 			{/* <SplatComponent /> */}
 

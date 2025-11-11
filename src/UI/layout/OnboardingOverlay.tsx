@@ -1,5 +1,5 @@
 import useWeatherStore from '../../store/GlobalState'
-import LocationSearch from './LocationSearch'
+import LocationSearch from '../components/LocationSearch'
 
 const OnboardingOverlay = () => {
 	const { hasEnteredApp, setHasEnteredApp, location } = useWeatherStore()

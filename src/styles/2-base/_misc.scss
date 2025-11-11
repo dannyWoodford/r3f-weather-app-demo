@@ -30,3 +30,8 @@ body {
   width: 100%;
   height: 100%;
 }
+
+/* Hide r3f-perf when the hidden modifier is present on the component */
+.stats--hidden {
+  display: none !important;
+}
