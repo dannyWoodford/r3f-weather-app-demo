@@ -7,7 +7,6 @@ import {
 // import { OrbitControls, Stats, Sphere, Environment } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 
-// import SplatComponent from './components/SplatComponent'
 import Stats from './components/Stats'
 import TilesRendererComponent from './components/TilesRendererComponent'
 import GlobeCamera from './components/GlobeCamera'
@@ -30,8 +29,6 @@ export default function Scene() {
 	return (
 		<group>
 			<Stats />
-
-			{/* <SplatComponent /> */}
 
 			<Atmosphere
 				ref={atmosphereRef}

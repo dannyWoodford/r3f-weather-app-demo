@@ -108,6 +108,9 @@ export default function LocationSearch() {
 			label: makeLabel(r),
 		})
 		setHasEnteredApp(true)
+		// Reset input and suggestions after selection
+		setQuery('')
+		setResults([])
 	}
 
 	return (

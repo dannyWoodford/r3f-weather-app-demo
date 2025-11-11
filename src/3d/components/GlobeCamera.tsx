@@ -15,7 +15,8 @@ const GlobeCamera = () => {
 	const longitude = useWeatherStore(s => s.location.longitude)
 	const initHeading = 65
 	const initPitch = -37
-	const distance = 2055
+	const distance = 4751
+
 
 	const camera = useThree(({ camera }) => camera)
 	usePovControls(camera, { collapsed: false })

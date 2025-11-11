@@ -7,6 +7,7 @@
   padding: 10px 12px;
   outline: none;
   transition: border-color 0.2s ease, background 0.2s ease;
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.65);
   }
@@ -81,4 +82,31 @@
 
 .onboarding__error {
   border-color: rgba(255, 100, 100, 0.35);
+}
+
+/* Fixed top-left container for reusable LocationSearch */
+.ui-fixed-search {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  width: min(270px, 40vw);
+  z-index: 40;
+
+	.input {
+		border: 1px solid rgba(255, 255, 255, 0.4);
+		background: rgba(87, 87, 87, 0.56);
+		border-radius: 40px;
+
+		&::placeholder {
+			color: rgba(255, 255, 255, 0.85);
+		}
+		&:focus {
+			border-color: rgb(255, 255, 255);
+			background: rgba(87, 87, 87, 0.96);
+		}
+	}
+
+	.onboarding__suggestions {
+		background: rgba(0, 0, 0, 0.5);
+	}
 }

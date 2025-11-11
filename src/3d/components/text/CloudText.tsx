@@ -26,7 +26,7 @@ export default function CloudText() {
 		const up = locationVector.clone().normalize()
 
 		// set Text x units above the surface at that location
-		const elevated = locationVector.clone().addScaledVector(up, 500)
+		const elevated = locationVector.clone().addScaledVector(up, 700)
 
 		textRef.current.position.copy(elevated)
 

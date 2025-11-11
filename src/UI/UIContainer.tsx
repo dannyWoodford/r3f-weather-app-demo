@@ -1,5 +1,6 @@
 import OnboardingOverlay from './layout/OnboardingOverlay'
 import WeatherDetails from './layout/WeatherDetails'
+import LocationSearch from './components/LocationSearch'
 
 import useWeatherStore from '../store/GlobalState'
 
@@ -10,7 +11,13 @@ const UIContainer = () => {
 		<>
 			<OnboardingOverlay />
 
-			{hasEnteredApp  && <WeatherDetails />}
+			{hasEnteredApp && <WeatherDetails />}
+
+			{hasEnteredApp && (
+				<div className='ui-fixed-search'>
+					<LocationSearch />
+				</div>
+			)}
 		</>
 	)
 }
