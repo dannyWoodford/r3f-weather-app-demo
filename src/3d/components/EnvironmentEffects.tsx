@@ -17,7 +17,6 @@ import {
 } from '@takram/three-atmosphere/r3f'
 import {
 	type CloudsQualityPreset,
-	type CloudsEffect,
 } from '@takram/three-clouds'
 import { Clouds } from '@takram/three-clouds/r3f'
 import { LensFlare, Dithering, Depth, Normal } from '@takram/three-geospatial-effects/r3f'
@@ -30,8 +29,12 @@ import GlobeCamera from './GlobeCamera'
 
 import CloudText from './text/CloudText'
 
+import useWeatherStore from '../../store/GlobalState'
+
 
 const EnvironmentEffects = () => {
+	const hasEnteredApp = useWeatherStore(s => s.hasEnteredApp)
+
 	const atmosphereRef = useRef<AtmosphereApi>(null)
 	const composerRef = useRef<EffectComposerImpl>(null)
 	
@@ -57,7 +60,6 @@ const EnvironmentEffects = () => {
 		{ collapsed: false }
 	)
 
-	const [clouds, setClouds] = useState<CloudsEffect | null>(null)
 	const { enabled, animate, ...cloudsProps } = useControls(
 		'clouds',
 		{
@@ -120,7 +122,7 @@ const EnvironmentEffects = () => {
 			<GlobeCamera />
 
 			<Suspense fallback={null}>
-				<CloudText />
+				{hasEnteredApp && <CloudText />}
 			</Suspense>
 
 			<EffectComposer 
@@ -145,7 +147,6 @@ const EnvironmentEffects = () => {
             <>
               {enabled && (
                 <Clouds
-                  ref={setClouds}
 									localWeatherVelocity={ animate ? [0.001, 0] : [0, 0]}
 									shadow-farScale={0.25}
 									{...cloudsProps}
@@ -156,7 +157,7 @@ const EnvironmentEffects = () => {
 								sunLight={sunLight}
 								skyLight={skyLight}
                 correctGeometricError={correctGeometricError}
-                albedoScale={1 / Math.PI}
+                albedoScale={2 / Math.PI}
               />
             </>
           )}
@@ -167,7 +168,7 @@ const EnvironmentEffects = () => {
               {normal && <Normal />}
               {!normal && !depth && (
                 <>
-									<ToneMapping mode={ToneMappingMode.AGX} />
+									<ToneMapping mode={ToneMappingMode.LINEAR} />
                   <SMAA />
                   <Dithering />
                 </>

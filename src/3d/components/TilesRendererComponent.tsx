@@ -14,7 +14,11 @@ import {
 } from '3d-tiles-renderer/plugins';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
+import { radians } from '@takram/three-geospatial'
 const dracoLoader = new DRACOLoader().setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+
+import { TileCreasedNormalsPlugin } from '../plugins/TileCreasedNormalsPlugin'
+
 
 export default function TilesRendererComponent() {
 	const assetId = 2275207
@@ -24,6 +28,7 @@ export default function TilesRendererComponent() {
 
 	return (
 		<group
+			renderOrder={1}
 		>
 			<TilesRenderer 
 			>
@@ -32,6 +37,11 @@ export default function TilesRendererComponent() {
 				<TilesPlugin plugin={TileCompressionPlugin} />
 				<TilesPlugin plugin={UpdateOnChangePlugin} />
 				<TilesPlugin plugin={TilesFadePlugin} />
+
+				<TilesPlugin
+					plugin={TileCreasedNormalsPlugin}
+					args={{ creaseAngle: radians(30) }}
+				/>
 
 
 				{/* Attributions */}

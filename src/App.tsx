@@ -19,7 +19,7 @@ import useWeatherStore from './store/GlobalState'
 // extend(THREE as any)
 
 export default function App() {
-	const { hasEnteredApp } = useWeatherStore()
+	const hasEnteredApp = useWeatherStore(s => s.hasEnteredApp)
 
 	return (
 		<>
@@ -58,15 +58,17 @@ export default function App() {
 				// shadows
 				gl={{
 					depth: false,
-					toneMappingExposure: 15,
+					toneMappingExposure: 8,
+					// alpha: true
 				}}
-				// camera={{
-				// 	near: 10,
-				// 	far: 4e5,
-				// 	// See the Clouds/Basic story for deriving ECEF coordinates and rotation.
-				// 	// position: [4529893.894855564, 2615333.425024031, 3638042.815326614],
-				// 	// rotation: [0.6423512931563148, -0.2928348796035058, -0.8344824769956042]
-				// }}
+				camera={{
+					near: 0.01,
+					far: 4e5,
+					fov: 70
+					// See the Clouds/Basic story for deriving ECEF coordinates and rotation.
+					// position: [4529893.894855564, 2615333.425024031, 3638042.815326614],
+					// rotation: [0.6423512931563148, -0.2928348796035058, -0.8344824769956042]
+				}}
 			>
 				<Scene />
 			</Canvas>
