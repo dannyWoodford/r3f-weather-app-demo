@@ -5,13 +5,15 @@
   display: grid;
   place-items: center;
   padding: 24px;
-	background:rgba(23, 23, 23, 0.49);
+  background: rgba(23, 23, 23, 0.49);
+  pointer-events: none;
 
   &__content {
     width: min(720px, 92vw);
     padding: 24px;
     display: grid;
     gap: 16px;
+    pointer-events: all;
   }
 }
 

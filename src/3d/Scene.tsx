@@ -1,15 +1,13 @@
 import React, { useRef, Suspense } from 'react'
-import * as THREE from 'three'
 import {
 	Atmosphere,
 	type AtmosphereApi,
 } from '@takram/three-atmosphere/r3f'
-// import { OrbitControls, Stats, Sphere, Environment } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 
 import Stats from './components/Stats'
 import TilesRendererComponent from './components/TilesRendererComponent'
-import GlobeCamera from './components/GlobeCamera'
+import JumpToLocation from './components/JumpToLocation'
 import EnvironmentEffects from './components/EnvironmentEffects'
 import CloudText from './components/text/CloudText'
 
@@ -36,12 +34,12 @@ export default function Scene() {
 				date={date}
 			>
 				<TilesRendererComponent />
-				<GlobeCamera />
+				<JumpToLocation />
 
 				<Suspense fallback={null}>
 					<CloudText />
 				</Suspense>
-				
+
 				<EnvironmentEffects />
 			</Atmosphere>
 		</group>

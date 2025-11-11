@@ -14,11 +14,18 @@ export default function CloudText() {
 	const locationVector = useWeatherStore((s) => s.locationVector)
 	const weatherCode = useWeatherStore((s) => s.data?.now.weatherCode ?? null)
 
+	// Compute display condition early so effects can depend on it
+	const desc = getWeatherDescription(weatherCode)
+	const conditionText = desc.toUpperCase()
+	const shouldShow = hasEnteredApp && desc !== 'Unknown'
+
 	const textRef = useRef<Group>(null)
 
 	const camera = useThree(({ camera }) => camera)
 
 	useEffect(() => {
+		// Only position/orient when the text is actually being shown
+		if (!shouldShow) return
 		if (!textRef.current || !locationVector) return
 		if (locationVector.lengthSq() === 0) return
 
@@ -26,7 +33,7 @@ export default function CloudText() {
 		const up = locationVector.clone().normalize()
 
 		// set Text x units above the surface at that location
-		const elevated = locationVector.clone().addScaledVector(up, 700)
+		const elevated = locationVector.clone().addScaledVector(up, 650)
 
 		textRef.current.position.copy(elevated)
 
@@ -42,7 +49,7 @@ export default function CloudText() {
 			const lookTarget = obj.position.clone().add(planarDir)
 			obj.lookAt(lookTarget)
 		}
-	}, [locationVector])
+	}, [locationVector, shouldShow])
 
 	const { followCamera } = useControls(
 		'cloud text',
@@ -52,11 +59,11 @@ export default function CloudText() {
 		{ collapsed: true }
 	)
 
-	const conditionText = getWeatherDescription(weatherCode).toUpperCase()
+
 
 	return (
 		<>
-			{hasEnteredApp && (
+			{shouldShow && (
 				<group ref={textRef}>
 					{/* placement helper */}
 					{/* <mesh position={[0,0,-60]}>
@@ -74,10 +81,10 @@ export default function CloudText() {
 
 					{followCamera && (
 						<Billboard follow={true}>
-							<CloudTextParticles text={conditionText} scale={50} />
+							<CloudTextParticles text={conditionText} scale={100} />
 						</Billboard>
 					)}
-					{!followCamera && <CloudTextParticles text={conditionText} scale={50} />}
+					{!followCamera && <CloudTextParticles text={conditionText} scale={100} />}
 				</group>
 			)}
 		</>

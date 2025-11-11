@@ -8,7 +8,7 @@ import { usePovControls } from '../helpers/usePovControls'
 
 import useWeatherStore from '../../store/GlobalState'
 
-const GlobeCamera = () => {
+const JumpToLocation = () => {
 	const setLocationVector = useWeatherStore(s => s.setLocationVector)
 
 	const latitude = useWeatherStore(s => s.location.latitude)
@@ -45,11 +45,11 @@ const GlobeCamera = () => {
 	useEffect(() => {
 		(camera as PerspectiveCamera).fov = fovValue;
 		(camera as PerspectiveCamera).updateProjectionMatrix();
-		
+
 	}, [camera, fovValue]);
 
 
 	return (null)
 }
 
-export default GlobeCamera
+export default JumpToLocation

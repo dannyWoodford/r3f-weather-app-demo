@@ -1,8 +1,9 @@
 import useWeatherStore from '../../store/GlobalState'
 import LocationSearch from '../components/LocationSearch'
+import UseMyLocation from '../components/UseMyLocation'
 
 const OnboardingOverlay = () => {
-	const { hasEnteredApp, setHasEnteredApp, location } = useWeatherStore()
+	const { hasEnteredApp, location } = useWeatherStore()
 
 	if (hasEnteredApp) return null
 
@@ -15,14 +16,7 @@ const OnboardingOverlay = () => {
 				</p>
 
 				<div className='onboarding__actions'>
-					<button
-						type='button'
-						className='btn btn--primary'
-						onClick={() => setHasEnteredApp(true)}
-						aria-label='Use my current location'
-					>
-						Use my location
-					</button>
+					<UseMyLocation />
 
 					<div className='onboarding__search'>
 						<LocationSearch />
@@ -30,7 +24,7 @@ const OnboardingOverlay = () => {
 				</div>
 
 				<p className='onboarding__hint'>
-					Current default: {location.label} (
+					Current: {location.label} (
 					{location.latitude.toFixed(2)}, {location.longitude.toFixed(2)})
 				</p>
 			</div>

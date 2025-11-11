@@ -23,6 +23,7 @@
     "r3f-perf": "^6.2.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-geolocated": "^4.4.0",
     "react-icons": "^5.5.0",
     "react-merge-refs": "^3.0.2",
     "sass": "^1.93.3",
