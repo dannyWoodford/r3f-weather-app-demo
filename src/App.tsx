@@ -16,7 +16,6 @@ import UIContainer from './UI/UIContainer'
 export default function App() {
 	const gl = useMemo(() => ({ 
 		depth: false, 
-		toneMappingExposure: 8 
 	}), []);
 
 	const camera = useMemo(() => ({ 

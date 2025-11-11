@@ -1,4 +1,4 @@
-import React, { useRef, Fragment } from 'react'
+import React, { useRef, Fragment, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { EffectComposer, SMAA, ToneMapping } from '@react-three/postprocessing'
 import {
@@ -20,13 +20,16 @@ const EnvironmentEffects = () => {
 	const composerRef = useRef<EffectComposerImpl>(null)
 	
 	const defaultCoverage = 0.3
+	const defaultToneMappingExposure = 8
 	
   const camera = useThree(({ camera }) => camera)
+	const gl = useThree(({ gl }) => gl)
 
-	const { toneMapping } = useControls(
+	const { toneMapping, exposure } = useControls(
 		'tone map',
 		{
-			toneMapping: true
+			toneMapping: true,
+			exposure: { value: defaultToneMappingExposure, min: 1, max: 60, step: 1 },
 		},
 		{ collapsed: false }
 	)
@@ -45,7 +48,7 @@ const EnvironmentEffects = () => {
 		{
 			enabled: true,
 			animate: true,
-			coverage: { value: defaultCoverage ?? 0.3, min: 0, max: 1, step: 0.01 },
+			coverage: { value: defaultCoverage, min: 0, max: 1, step: 0.01 },
 			qualityPreset: {
 				value: 'high' as const,
 				options: [
@@ -80,6 +83,11 @@ const EnvironmentEffects = () => {
 			})
 		}
 	})
+
+	// Update Renderer Tone Mapping Exposure
+	useEffect(() => {
+		gl.toneMappingExposure = exposure;
+	}, [gl, exposure]);
 
   return (
 
