@@ -1,4 +1,5 @@
 import useWeatherStore from '../../store/GlobalState'
+import LocationSearch from './LocationSearch'
 
 const OnboardingOverlay = () => {
 	const { hasEnteredApp, setHasEnteredApp, location } = useWeatherStore()
@@ -24,21 +25,7 @@ const OnboardingOverlay = () => {
 					</button>
 
 					<div className='onboarding__search'>
-						<input
-							type='text'
-							className='input'
-							placeholder='Search city or coordinates'
-							aria-label='Search for a location'
-							disabled={false}
-						/>
-						<button
-							type='button'
-							className='btn'
-							onClick={() => setHasEnteredApp(true)}
-							aria-label='Search location'
-						>
-							Search
-						</button>
+						<LocationSearch />
 					</div>
 				</div>
 

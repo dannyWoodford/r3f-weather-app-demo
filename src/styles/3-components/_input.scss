@@ -15,3 +15,70 @@
     background: rgba(0, 0, 0, 0.35);
   }
 }
+
+/* Overlay dropdown for onboarding search suggestions */
+.onboarding__search {
+  position: relative;
+}
+
+.onboarding__suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  // max-height: 280px;
+  overflow: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+  backdrop-filter: blur(6px);
+}
+
+.onboarding__suggestions li + li {
+  margin-top: 6px;
+}
+
+.onboarding__suggestions button {
+  width: 100%;
+  display: block;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.onboarding__suggestions button:hover,
+.onboarding__suggestions button:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+/* Non-intrusive overlays for empty/error states */
+.onboarding__no-results,
+.onboarding__error {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #fff;
+  z-index: 20;
+  backdrop-filter: blur(6px);
+}
+
+.onboarding__error {
+  border-color: rgba(255, 100, 100, 0.35);
+}
