@@ -1,47 +1,27 @@
-import React, { useRef, Fragment, useState, Suspense } from 'react'
-import * as THREE from 'three'
+import React, { useRef, Fragment } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-
 import { EffectComposer, SMAA, ToneMapping } from '@react-three/postprocessing'
 import {
 	ToneMappingMode,
 	EffectMaterial,
 	type EffectComposer as EffectComposerImpl
 } from 'postprocessing'
-// import { EffectComposer } from '../helpers/EffectComposer'
-
 import {
   AerialPerspective,
-  Atmosphere,
-  type AtmosphereApi,
 } from '@takram/three-atmosphere/r3f'
 import {
 	type CloudsQualityPreset,
 } from '@takram/three-clouds'
 import { Clouds } from '@takram/three-clouds/r3f'
 import { LensFlare, Dithering, Depth, Normal } from '@takram/three-geospatial-effects/r3f'
-
 import { useControls } from 'leva'
-import { usePovControls } from '../helpers/usePovControls'
-
-import TilesRendererComponent from './TilesRendererComponent'
-import GlobeCamera from './GlobeCamera'
-
-import CloudText from './text/CloudText'
-
-import useWeatherStore from '../../store/GlobalState'
-
 
 const EnvironmentEffects = () => {
-	const hasEnteredApp = useWeatherStore(s => s.hasEnteredApp)
-
-	const atmosphereRef = useRef<AtmosphereApi>(null)
 	const composerRef = useRef<EffectComposerImpl>(null)
 	
 	const defaultCoverage = 0.3
 	
   const camera = useThree(({ camera }) => camera)
-	usePovControls(camera, { collapsed: true })
 
 	const { toneMapping } = useControls(
 		'tone map',
@@ -78,10 +58,9 @@ const EnvironmentEffects = () => {
 		},
 		{ collapsed: false }
 	)
-	const { correctAltitude, correctGeometricError, sky, sunLight, skyLight, } = useControls(
+	const { correctGeometricError, sky, sunLight, skyLight, } = useControls(
 		'atmosphere',
 		{
-			correctAltitude: true,
 			correctGeometricError: true,
 			sky: true,
 			sunLight: true,
@@ -102,28 +81,7 @@ const EnvironmentEffects = () => {
 		}
 	})
 
-	const date = Date.parse('2025-11-08T15:00:00Z')
-
-	useFrame(() => {
-		const atmosphere = atmosphereRef.current;
-		if (atmosphere == null) {
-			return;
-		}
-		atmosphere.updateByDate(date);
-	});
-
   return (
-    <Atmosphere
-      ref={atmosphereRef}
-			correctAltitude={correctAltitude}
-      // date={Date.parse('2025-11-08T15:00:00Z')}
-    >
-			<TilesRendererComponent />
-			<GlobeCamera />
-
-			<Suspense fallback={null}>
-				{hasEnteredApp && <CloudText />}
-			</Suspense>
 
 			<EffectComposer 
 				ref={composerRef} 
@@ -177,7 +135,6 @@ const EnvironmentEffects = () => {
           )}
 				</Fragment>
       </EffectComposer>
-    </Atmosphere>
   )
 }
 

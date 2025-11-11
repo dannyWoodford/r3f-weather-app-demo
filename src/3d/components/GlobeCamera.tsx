@@ -1,7 +1,10 @@
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
 import { Geodetic, PointOfView, radians } from '@takram/three-geospatial'
 import { useControls } from 'leva'
+import { PerspectiveCamera } from "three";
+
+import { usePovControls } from '../helpers/usePovControls'
 
 import useWeatherStore from '../../store/GlobalState'
 
@@ -15,16 +18,17 @@ const GlobeCamera = () => {
 	const distance = 1265
 
 	const camera = useThree(({ camera }) => camera)
+	usePovControls(camera, { collapsed: false })
 
-	const { heading, pitch } = useControls(
-		'Cloud Text',
+	const { heading, pitch, fov: fovValue } = useControls(
+		'globe camera',
 		{
 			heading: { value: initHeading ?? initHeading, min: 0, max: 200, step: 1 },
 			pitch: { value: initPitch ?? initPitch, min: -200, max: 200, step: 1 },
+			fov: { value: 70, min: 20, max: 120, step: 1 },
 		},
 		{ collapsed: false }
 	)
-
 	useLayoutEffect(() => {
 		const getLocVec = new Geodetic(radians(longitude), radians(latitude)).toECEF()
 
@@ -37,6 +41,13 @@ const GlobeCamera = () => {
 
 		setLocationVector(getLocVec)
 	}, [longitude, latitude, heading, pitch, distance, camera])
+
+	// Update Camera FOV
+	useEffect(() => {
+		(camera as PerspectiveCamera).fov = fovValue;
+		(camera as PerspectiveCamera).updateProjectionMatrix();
+		
+	}, [camera, fovValue]);
 
 
 	return (null)

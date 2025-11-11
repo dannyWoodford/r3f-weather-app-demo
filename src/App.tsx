@@ -1,16 +1,12 @@
+import React, { useMemo } from 'react'
 // import * as THREE from 'three/webgpu'
 // import * as TSL from 'three/tsl'
 import { Canvas, extend } from '@react-three/fiber'
-import { Leva } from 'leva'
-import { ACESFilmicToneMapping, SRGBColorSpace } from 'three'
 
-
+import LevaConfig from './LevaConfig'
 import Scene from './3d/Scene'
 import UI from './UI/index'
 import OnboardingOverlay from './UI/components/OnboardingOverlay'
-
-import useWeatherStore from './store/GlobalState'
-
 
 // declare module '@react-three/fiber' {
 // 	interface ThreeElements extends ThreeToJSXElements<typeof THREE> { }
@@ -19,36 +15,30 @@ import useWeatherStore from './store/GlobalState'
 // extend(THREE as any)
 
 export default function App() {
-	const hasEnteredApp = useWeatherStore(s => s.hasEnteredApp)
+	const gl = useMemo(() => ({ 
+		depth: false, 
+		toneMappingExposure: 8 
+	}), []);
+
+	const camera = useMemo(() => ({ 
+		near: 0.01, 
+		far: 4e5, 
+		fov: 70,
+		// See the Clouds/Basic story for deriving ECEF coordinates and rotation.
+		// position: [4529893.894855564, 2615333.425024031, 3638042.815326614],
+		// rotation: [0.6423512931563148, -0.2928348796035058, -0.8344824769956042]
+	}), []);
 
 	return (
 		<>
-			<Leva
-				collapsed={false}
-				// oneLineLabels={false}
-				// flat={true}
-				hidden={!hasEnteredApp}
-				theme={{
-					// sizes: {
-					// 	titleBarHeight: '28px',
-					// },
-					// fontSizes: {
-					// 	root: '10px',
-					// },
-				}}
-			/>
+			<LevaConfig />
 
 			<OnboardingOverlay />
 
 			<UI />
 
 			<Canvas
-				// dpr={[1, 2]}
-				// gl={{
-				// 	antialias: true,
-				// 	toneMapping: ACESFilmicToneMapping,
-				// 	outputColorSpace: SRGBColorSpace,
-				// }}
+				dpr={[1, 2]}
 				// gl={async (props) => {
 				// 	const renderer = new THREE.WebGPURenderer(props as any)
 				// 	await renderer.init()
@@ -56,19 +46,8 @@ export default function App() {
 				// }}
 				
 				// shadows
-				gl={{
-					depth: false,
-					toneMappingExposure: 8,
-					// alpha: true
-				}}
-				camera={{
-					near: 0.01,
-					far: 4e5,
-					fov: 70
-					// See the Clouds/Basic story for deriving ECEF coordinates and rotation.
-					// position: [4529893.894855564, 2615333.425024031, 3638042.815326614],
-					// rotation: [0.6423512931563148, -0.2928348796035058, -0.8344824769956042]
-				}}
+				gl={gl} 
+				camera={camera}
 			>
 				<Scene />
 			</Canvas>

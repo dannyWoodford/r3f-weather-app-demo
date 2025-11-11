@@ -16,7 +16,7 @@ export function usePovControls(
 	folderSettings?: FolderSettings
 ): void {
 	useControls(
-		'pov',
+		'globe camera',
 		{
 			copy: button(() => {
 				const pov = new PointOfView().setFromCamera(camera)

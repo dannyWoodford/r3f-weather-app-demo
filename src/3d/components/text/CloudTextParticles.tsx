@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { useTexture } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { InstancedMesh, Object3D } from 'three'
+import { useControls } from 'leva'
+
 
 type CloudTextParticlesProps = {
 	// Text to render as clouds
@@ -38,12 +40,13 @@ type Particle = {
 const DEFAULT_TEXT = 'FLUFFY'
 
 export default function CloudTextParticles(props: CloudTextParticlesProps) {
+	console.log('CloudTextParticles')
 	const {
 		text = DEFAULT_TEXT,
 		scale = 1,
 		fontFamily = 'Verdana',
 		fontSizePx = 120,
-		fontScaleFactor = 0.04,
+		fontScaleFactor = 0.05,
 		sampleStep = 1,
 		opacity = 0.7,
 	} = props
@@ -127,48 +130,54 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 		}
 	}, [text, fontFamily, fontSizePx, fontScaleFactor, sampleStep])
 
+
 	// Animate particle matrices
-	useEffect(() => {
+	const { animate: animateParticles } = useControls(
+		'cloud text',
+		{
+			animate: true,
+		}
+	)
+	
+	const animate = () => {
 		if (!instancedRef.current) return
 		const mesh = instancedRef.current
 
-		let rafId = 0
-		const animate = () => {
-			// Compute local billboard quaternion that cancels parent rotation
-			const parentQuat = new THREE.Quaternion()
-			instancedRef.current?.parent?.getWorldQuaternion(parentQuat)
-			parentQuat.invert()
-			const cameraQuat = camera.quaternion
+		// Compute local billboard quaternion that cancels parent rotation
+		const parentQuat = new THREE.Quaternion()
+		instancedRef.current?.parent?.getWorldQuaternion(parentQuat)
+		parentQuat.invert()
+		const cameraQuat = camera.quaternion
 
-			let i = 0
-			for (const p of particles) {
-				// Evolve
-				p.age += p.ageDelta
-				p.rotationZ += p.deltaRotation
-				if (p.isGrowing) {
-					p.scale += p.deltaScale
-					if (p.scale >= p.maxScale) {
-						p.isGrowing = false
-					}
-				} else {
-					p.scale = p.maxScale + 0.3 * Math.sin(p.age)
+		let i = 0
+		for (const p of particles) {
+			// Evolve
+			p.age += p.ageDelta
+			p.rotationZ += p.deltaRotation
+			if (p.isGrowing) {
+				p.scale += p.deltaScale
+				if (p.scale >= p.maxScale) {
+					p.isGrowing = false
 				}
-
-				// Build matrix: billboard in world space (counteract parent rotation), then gentle spin
-				dummy.quaternion.copy(cameraQuat).premultiply(parentQuat)
-				dummy.rotateZ(p.rotationZ)
-				dummy.position.set(p.x, sceneHeight - p.y, p.z)
-				dummy.scale.set(p.scale, p.scale, p.scale)
-				dummy.updateMatrix()
-				mesh.setMatrixAt(i++, dummy.matrix)
+			} else {
+				p.scale = p.maxScale + 0.3 * Math.sin(p.age)
 			}
-			mesh.instanceMatrix.needsUpdate = true
-			rafId = requestAnimationFrame(animate)
-		}
 
-		rafId = requestAnimationFrame(animate)
-		return () => cancelAnimationFrame(rafId)
-	}, [particles, sceneHeight, dummy, camera])
+			// Build matrix: billboard in world space (counteract parent rotation), then gentle spin
+			dummy.quaternion.copy(cameraQuat).premultiply(parentQuat)
+			dummy.rotateZ(p.rotationZ)
+			dummy.position.set(p.x, sceneHeight - p.y, p.z)
+			dummy.scale.set(p.scale, p.scale, p.scale)
+			dummy.updateMatrix()
+			mesh.setMatrixAt(i++, dummy.matrix)
+		}
+		mesh.instanceMatrix.needsUpdate = true
+	}
+	useFrame(() => {
+		if (animateParticles) {
+			animate()
+		} 
+	})
 
 	// Anchor: center the text block and account for the component scale
 	const anchorPosition = useMemo(() => {
@@ -182,14 +191,14 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 		const mat = new THREE.MeshToonMaterial({
 			color: 0xffffff,
 			emissive: 0xffffff,
-			emissiveIntensity: 12,
+			emissiveIntensity: 7,
 			// map: alphaMap,
-			alphaMap: alphaMap,
+			// alphaMap: alphaMap,
 			// depthTest: false,
-			depthWrite: true,
+			// depthWrite: true,
 			opacity,
-			transparent: true,
-			alphaTest: 0.1,
+			transparent: false,
+			// alphaTest: 0.1,
 			// side: THREE.DoubleSide,
 		})
 		return mat
