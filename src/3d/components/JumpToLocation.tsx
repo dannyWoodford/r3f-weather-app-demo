@@ -7,6 +7,7 @@ import { PerspectiveCamera } from "three";
 import { usePovControls } from '../helpers/usePovControls'
 
 import useWeatherStore from '../../store/GlobalState'
+import { useCloudCoverage } from '../../hooks/useCloudCoverage'
 
 const JumpToLocation = () => {
 	const setLocationVector = useWeatherStore(s => s.setLocationVector)
@@ -14,8 +15,12 @@ const JumpToLocation = () => {
 	const latitude = useWeatherStore(s => s.location.latitude)
 	const longitude = useWeatherStore(s => s.location.longitude)
 	const initHeading = 65
-	const initPitch = -37
+	const basePitch = -37
 	const distance = 4751
+
+	// Weather → coverage → recommended pitch
+	const weatherCode = useWeatherStore(s => s.data?.now.weatherCode ?? null)
+	const { recommendedPitch } = useCloudCoverage(weatherCode, 0.0, basePitch)
 
 
 	const camera = useThree(({ camera }) => camera)
@@ -31,7 +36,7 @@ const JumpToLocation = () => {
 	useLayoutEffect(() => {
 		const getLocVec = new Geodetic(radians(longitude), radians(latitude)).toECEF()
 
-		new PointOfView(distance, radians(initHeading), radians(initPitch)).decompose(
+		new PointOfView(distance, radians(initHeading), radians(recommendedPitch)).decompose(
 			getLocVec,
 			camera.position,
 			camera.quaternion,
@@ -39,7 +44,7 @@ const JumpToLocation = () => {
 		)
 
 		setLocationVector(getLocVec)
-	}, [longitude, latitude, initHeading, initPitch, distance, camera])
+	}, [longitude, latitude, initHeading, recommendedPitch, distance, camera])
 
 	// Update Camera FOV
 	useEffect(() => {
