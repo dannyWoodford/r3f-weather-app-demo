@@ -10,7 +10,7 @@
 - Cesium ion token required: set `VITE_ION_KEY` in your environment for tiles to load.
 - Performance: 
 Volumetric effects and 3D tiles are GPU‑intensive; desktop Chrome is recommended. If performance allows, set Cloud quality to “high” or “ultra” to enable volumetric light, and optionally enable “Lens Flare” in the Leva Effects panel.
-- Prototype quality: Not production‑ready; requires performance tuning and feature work. Possible improvements include using the weather API data to be reflected in the 3D atmosphere by setting `Cloud` coverage, accurate sunrise/sunset, and potentially rain/snow shaders based on location.
+- Prototype quality: Not production‑ready; requires performance tuning and feature work. Possible improvements include using the weather API data to be reflected in the 3D atmosphere by setting accurate sunrise/sunset, and potentially rain/snow shaders based on location.
 
 ## Features
 
