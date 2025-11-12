@@ -15,7 +15,7 @@ const JumpToLocation = () => {
 	const longitude = useWeatherStore(s => s.location.longitude)
 	const initHeading = 65
 	const initPitch = -37
-	const distance = 4751
+	const distance = 6151
 
 
 	const camera = useThree(({ camera }) => camera)

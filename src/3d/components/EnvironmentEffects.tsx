@@ -61,13 +61,10 @@ const EnvironmentEffects = () => {
 		},
 		{ collapsed: false }
 	)
-	const { correctGeometricError, sky, sunLight, skyLight, } = useControls(
+	const { correctGeometricError } = useControls(
 		'atmosphere',
 		{
 			correctGeometricError: true,
-			sky: true,
-			sunLight: true,
-			skyLight: true,
 		},
 		{ collapsed: false }
 	)
@@ -103,10 +100,7 @@ const EnvironmentEffects = () => {
 						lensFlare,
 						normal,
             depth,
-						enabled,
-						sky,
-						sunLight,
-						skyLight,
+						enabled
 					])}
 				>
           {!normal && !depth && (
@@ -119,9 +113,9 @@ const EnvironmentEffects = () => {
                 />
               )}
               <AerialPerspective
-								sky={sky}
-								sunLight={sunLight}
-								skyLight={skyLight}
+								sky
+								sunLight
+								skyLight
                 correctGeometricError={correctGeometricError}
                 albedoScale={2 / Math.PI}
               />

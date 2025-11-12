@@ -48,10 +48,10 @@ export async function fetchForecast(
 		new Date((timeStart + i * interval + utcOffsetSeconds) * 1000),
 	)
 
-	const vTemp = hourly.variables(0)!.valuesArray()
-	const vHumidity = hourly.variables(1)!.valuesArray()
-	const vWind = hourly.variables(2)!.valuesArray()
-	const vCode = hourly.variables(3)!.valuesArray()
+	const vTemp = Array.from(hourly.variables(0)?.valuesArray() ?? [])
+	const vHumidity = Array.from(hourly.variables(1)?.valuesArray() ?? [])
+	const vWind = Array.from(hourly.variables(2)?.valuesArray() ?? [])
+	const vCode = Array.from(hourly.variables(3)?.valuesArray() ?? [])
 
 	const points: WeatherPoint[] = timeArray.map((time, idx) => ({
 		time,

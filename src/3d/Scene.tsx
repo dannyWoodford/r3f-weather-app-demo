@@ -14,7 +14,7 @@ import CloudText from './components/text/CloudText'
 export default function Scene() {
 	const atmosphereRef = useRef<AtmosphereApi>(null)
 
-	const date = Date.parse('2025-11-08T15:00:00Z')
+	const date = Date.parse('2025-11-08T15:45:00Z')
 
 	// useFrame(() => {
 	// 	const atmosphere = atmosphereRef.current;

@@ -22,17 +22,15 @@ import { TileCreasedNormalsPlugin } from '../plugins/TileCreasedNormalsPlugin'
 
 export default function TilesRendererComponent() {
 	const assetId = 2275207
-	
+
 	// night
 	// const assetId = 3812
 
 	return (
-		<group
-			renderOrder={1}
-		>
-			<TilesRenderer 
+		<group>
+			<TilesRenderer
 			>
-				<TilesPlugin plugin={CesiumIonAuthPlugin} args={{ apiToken: import.meta.env.VITE_ION_KEY, assetId: assetId, autoRefreshToken: true }} />
+				<TilesPlugin plugin={CesiumIonAuthPlugin} args={[{ apiToken: import.meta.env.VITE_ION_KEY, assetId: assetId, autoRefreshToken: true }]} />
 				<TilesPlugin plugin={GLTFExtensionsPlugin} dracoLoader={dracoLoader} />
 				<TilesPlugin plugin={TileCompressionPlugin} />
 				<TilesPlugin plugin={UpdateOnChangePlugin} />
@@ -40,20 +38,20 @@ export default function TilesRendererComponent() {
 
 				<TilesPlugin
 					plugin={TileCreasedNormalsPlugin}
-					args={{ creaseAngle: radians(30) }}
+					args={[{ creaseAngle: radians(30) }]}
 				/>
 
 
 				{/* Attributions */}
 				{/* <TilesAttributionOverlay /> */}
-				
+
 				{/* Controls */}
-				<GlobeControls 
-					enableDamping={true} 
+				<GlobeControls
+					enableDamping={true}
 					adjustHeight={false}
 					maxAltitude={Math.PI * 0.55} // Permit grazing angles
-					// maxDistance={7500}
-					/>
+				// maxDistance={7500}
+				/>
 			</TilesRenderer>
 		</group>
 	)
