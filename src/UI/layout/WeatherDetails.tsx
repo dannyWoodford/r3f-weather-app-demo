@@ -15,7 +15,7 @@ const WeatherDetails = () => {
 				<header className='weather-header card card--glass'>
 					<div className='weather-header__location'>{location.label}</div>
 					{data ? (
-						<LocationClock className='weather-header__time' utcOffsetSeconds={data.utcOffsetSeconds} />
+						<LocationClock className='weather-header__time' utcOffsetSeconds={data.utcOffsetSeconds} timezone={data.timezone} />
 					) : (
 						<time className='weather-header__time'>—</time>
 					)}

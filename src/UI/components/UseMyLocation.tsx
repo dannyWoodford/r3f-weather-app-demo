@@ -15,13 +15,12 @@ const REVERSE_API = 'https://api.bigdatacloud.net/data/reverse-geocode-client'
 function makeLabelFromBdc(res: BdcReverseResponse): string {
 	const cityLike = res.locality || res.city
 	const state = res.principalSubdivision
-	const zip = res.postcode
 	const country = res.countryCode
 
-	if (cityLike && state && zip) {
-		return `${cityLike}, ${state} ${zip}${country ? `, ${country}` : ''}`
+	if (cityLike && state) {
+		return `${cityLike}, ${state} ${country ? `, ${country}` : ''}`
 	}
-	const parts = [cityLike, state, zip, country].filter(Boolean)
+	const parts = [cityLike, state, country].filter(Boolean)
 	return parts.join(', ')
 }
 

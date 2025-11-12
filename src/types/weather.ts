@@ -26,6 +26,7 @@ export type WeatherNow = {
 export type WeatherData = {
 	coordinates: Coordinates
 	utcOffsetSeconds: number
+	timezone: string
 	hourly: WeatherHourly
 	now: WeatherNow
 }

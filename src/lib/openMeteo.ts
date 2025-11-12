@@ -23,12 +23,20 @@ export async function fetchForecast(
 		latitude,
 		longitude,
 		hourly: HOURLY_VARS.join(','),
+		timezone: 'auto',
 	}
 	const url = 'https://api.open-meteo.com/v1/forecast'
 	const responses = await fetchWeatherApi(url, params)
 	const response = responses[0]
 
 	const utcOffsetSeconds = response.utcOffsetSeconds()
+	// Try to read timezone string from SDK response; default to 'UTC' if unavailable
+	let timezone = 'UTC'
+	try {
+		if (typeof (response as any).timezone === 'function') {
+			timezone = (response as any).timezone()
+		}
+	} catch {}
 	const hourly = response.hourly()!
 
 	const timeStart = Number(hourly.time())
@@ -60,6 +68,7 @@ export async function fetchForecast(
 	return {
 		coordinates: { latitude, longitude },
 		utcOffsetSeconds,
+		timezone,
 		hourly: hourlyData,
 		now: first
 			? { ...first }
