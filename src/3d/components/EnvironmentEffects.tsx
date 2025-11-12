@@ -16,6 +16,10 @@ import { Clouds } from '@takram/three-clouds/r3f'
 import { LensFlare, Dithering, Depth, Normal } from '@takram/three-geospatial-effects/r3f'
 import { useControls } from 'leva'
 
+import { useColorGradingControls } from '../helpers/useColorGradingControls'
+import { HaldLUT } from '../helpers/HaldLUT'
+
+
 const EnvironmentEffects = () => {
 	const composerRef = useRef<EffectComposerImpl>(null)
 	
@@ -42,6 +46,9 @@ const EnvironmentEffects = () => {
 		},
 		{ collapsed: false }
 	)
+
+	const lut = useColorGradingControls()
+	// const lut = null
 
 	const { enabled, animate, ...cloudsProps } = useControls(
 		'clouds',
@@ -103,6 +110,7 @@ const EnvironmentEffects = () => {
 						lensFlare,
 						normal,
             depth,
+						lut,
 						enabled,
 						sky,
 						sunLight,
@@ -135,6 +143,7 @@ const EnvironmentEffects = () => {
               {!normal && !depth && (
                 <>
 									<ToneMapping mode={ToneMappingMode.LINEAR} />
+									{lut != null && <HaldLUT path={lut} />}
                   <SMAA />
                   <Dithering />
                 </>
