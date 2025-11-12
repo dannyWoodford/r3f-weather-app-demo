@@ -40,7 +40,6 @@ type Particle = {
 const DEFAULT_TEXT = 'FLUFFY'
 
 export default function CloudTextParticles(props: CloudTextParticlesProps) {
-	console.log('CloudTextParticles')
 	const {
 		text = DEFAULT_TEXT,
 		scale = 1,
