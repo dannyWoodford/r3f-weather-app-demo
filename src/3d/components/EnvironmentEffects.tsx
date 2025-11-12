@@ -7,7 +7,7 @@ import {
 	type EffectComposer as EffectComposerImpl
 } from 'postprocessing'
 import {
-  AerialPerspective,
+	AerialPerspective,
 } from '@takram/three-atmosphere/r3f'
 import {
 	type CloudsQualityPreset,
@@ -16,13 +16,62 @@ import { Clouds } from '@takram/three-clouds/r3f'
 import { LensFlare, Dithering, Depth, Normal } from '@takram/three-geospatial-effects/r3f'
 import { useControls } from 'leva'
 
+import { getWeatherDescription } from '../../lib/weatherCodes'
+import useWeatherStore from '../../store/GlobalState'
+
 const EnvironmentEffects = () => {
 	const composerRef = useRef<EffectComposerImpl>(null)
-	
-	const defaultCoverage = 0.3
+
 	const defaultToneMappingExposure = 8
+
+	const weatherCode = useWeatherStore((s) => s.data?.now.weatherCode ?? null)
+
+	// Compute display condition early so effects can depend on it
+	const desc = getWeatherDescription(weatherCode)
+
+	const defaultCoverage = 0.28;
+
+	// coverage will be synced via Leva setter in an effect below
+	const [{ enabled, animate, ...cloudsProps }, setClouds] = useControls(
+		'clouds',
+		() => ({
+			enabled: true,
+			animate: true,
+			coverage: { value: defaultCoverage, min: 0, max: 1, step: 0.01 },
+			qualityPreset: {
+				value: 'low' as const,
+				options: [
+					'low',
+					'medium',
+					'high',
+					'ultra'
+				] satisfies CloudsQualityPreset[]
+			}
+		}),
+		{ collapsed: false }
+	)
+
+	// Update Leva coverage control when weather description changes
+	useEffect(() => {
+		const mapping: Record<string, number> = {
+			'Clear sky': 0.1,
+			'Mainly clear': 0.2,
+			'Partly cloudy': 0.35,
+			'Overcast': 0.53,
+		}
+		const next = mapping[desc] ?? defaultCoverage
+		setClouds({ coverage: next })
+	}, [desc, defaultCoverage, setClouds])
 	
-  const camera = useThree(({ camera }) => camera)
+	const { correctGeometricError } = useControls(
+		'atmosphere',
+		{
+			correctGeometricError: true,
+		},
+		{ collapsed: false }
+	)
+
+	const camera = useThree(({ camera }) => camera)
 	const gl = useThree(({ gl }) => gl)
 
 	const { toneMapping, exposure } = useControls(
@@ -38,33 +87,7 @@ const EnvironmentEffects = () => {
 		{
 			lensFlare: false,
 			depth: false,
-      normal: false
-		},
-		{ collapsed: false }
-	)
-
-	const { enabled, animate, ...cloudsProps } = useControls(
-		'clouds',
-		{
-			enabled: true,
-			animate: true,
-			coverage: { value: defaultCoverage, min: 0, max: 1, step: 0.01 },
-			qualityPreset: {
-				value: 'low' as const,
-				options: [
-					'low',
-					'medium',
-					'high',
-					'ultra'
-				] satisfies CloudsQualityPreset[]
-			}
-		},
-		{ collapsed: false }
-	)
-	const { correctGeometricError } = useControls(
-		'atmosphere',
-		{
-			correctGeometricError: true,
+			normal: false
 		},
 		{ collapsed: false }
 	)
@@ -86,58 +109,58 @@ const EnvironmentEffects = () => {
 		gl.toneMappingExposure = exposure;
 	}, [gl, exposure]);
 
-  return (
+	return (
 
-			<EffectComposer 
-				ref={composerRef} 
-				multisampling={0} 
-				enableNormalPass
+		<EffectComposer
+			ref={composerRef}
+			multisampling={0}
+			enableNormalPass
+		>
+			<Fragment
+				// Effects are order-dependant; we need to reconstruct the nodes.
+				key={JSON.stringify([
+					correctGeometricError,
+					lensFlare,
+					normal,
+					depth,
+					enabled
+				])}
 			>
-				<Fragment
-					// Effects are order-dependant; we need to reconstruct the nodes.
-					key={JSON.stringify([
-						correctGeometricError,
-						lensFlare,
-						normal,
-            depth,
-						enabled
-					])}
-				>
-          {!normal && !depth && (
-            <>
-              {enabled && (
-                <Clouds
-									localWeatherVelocity={ animate ? [0.001, 0] : [0, 0]}
-									shadow-farScale={0.25}
-									{...cloudsProps}
-                />
-              )}
-              <AerialPerspective
-								sky
-								sunLight
-								skyLight
-                correctGeometricError={correctGeometricError}
-                albedoScale={2 / Math.PI}
-              />
-            </>
-          )}
-					{toneMapping && (
-            <>
-              {lensFlare && <LensFlare />}
-              {depth && <Depth useTurbo />}
-              {normal && <Normal />}
-              {!normal && !depth && (
-                <>
-									<ToneMapping mode={ToneMappingMode.LINEAR} />
-                  <SMAA />
-                  <Dithering />
-                </>
-              )}
-            </>
-          )}
-				</Fragment>
-      </EffectComposer>
-  )
+				{!normal && !depth && (
+					<>
+						{enabled && (
+							<Clouds
+								localWeatherVelocity={animate ? [0.001, 0] : [0, 0]}
+								shadow-farScale={0.25}
+								{...cloudsProps}
+							/>
+						)}
+						<AerialPerspective
+							sky
+							sunLight
+							skyLight
+							correctGeometricError={correctGeometricError}
+							albedoScale={2 / Math.PI}
+						/>
+					</>
+				)}
+				{toneMapping && (
+					<>
+						{lensFlare && <LensFlare />}
+						{depth && <Depth useTurbo />}
+						{normal && <Normal />}
+						{!normal && !depth && (
+							<>
+								<ToneMapping mode={ToneMappingMode.LINEAR} />
+								<SMAA />
+								<Dithering />
+							</>
+						)}
+					</>
+				)}
+			</Fragment>
+		</EffectComposer>
+	)
 }
 
 export default EnvironmentEffects

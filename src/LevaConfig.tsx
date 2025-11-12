@@ -33,7 +33,7 @@ const LevaConfig = () => {
 
 	return (
 		<Leva
-			collapsed={true}
+			collapsed={false}
 			hidden={!hasEnteredApp}
 			theme={{
 				...(expanded && {
