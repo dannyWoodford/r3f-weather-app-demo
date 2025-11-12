@@ -3,7 +3,7 @@ import {
 	Atmosphere,
 	type AtmosphereApi,
 } from '@takram/three-atmosphere/r3f'
-import { useFrame } from '@react-three/fiber'
+// import { useFrame } from '@react-three/fiber'
 
 import Stats from './components/Stats'
 import TilesRendererComponent from './components/TilesRendererComponent'

@@ -72,8 +72,6 @@ export default function CloudText() {
 		{ collapsed: true }
 	)
 
-
-
 	return (
 		<>
 			{shouldShow && (

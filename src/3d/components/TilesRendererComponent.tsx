@@ -1,7 +1,7 @@
 import {
 	TilesPlugin,
 	TilesRenderer,
-	TilesAttributionOverlay,
+	// TilesAttributionOverlay,
 	GlobeControls,
 } from '3d-tiles-renderer/r3f';
 // Plugins

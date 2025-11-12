@@ -1,7 +1,6 @@
 import React, { useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import * as THREE from 'three'
-import { InstancedMesh, Object3D } from 'three'
+import { InstancedMesh, Object3D, Quaternion, Vector3, SphereGeometry, MeshToonMaterial } from 'three'
 import { useControls } from 'leva'
 
 
@@ -141,7 +140,7 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 		const mesh = instancedRef.current
 
 		// Compute local billboard quaternion that cancels parent rotation
-		const parentQuat = new THREE.Quaternion()
+		const parentQuat = new Quaternion()
 		instancedRef.current?.parent?.getWorldQuaternion(parentQuat)
 		parentQuat.invert()
 		const cameraQuat = camera.quaternion
@@ -178,14 +177,14 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 
 	// Anchor: center the text block and account for the component scale
 	const anchorPosition = useMemo(() => {
-		return new THREE.Vector3(-0.5 * sceneWidth * scale, -0.5 * sceneHeight * scale, 0)
+		return new Vector3(-0.5 * sceneWidth * scale, -0.5 * sceneHeight * scale, 0)
 	}, [sceneWidth, sceneHeight, scale])
 
 	// Geometry/Material are stable; count derives from particles length
-	const geometry = useMemo(() => new THREE.SphereGeometry(0.25), [])
+	const geometry = useMemo(() => new SphereGeometry(0.25), [])
 
 	const material = useMemo(() => {
-		const mat = new THREE.MeshToonMaterial({
+		const mat = new MeshToonMaterial({
 			color: 0xffffff,
 			emissive: 0xffffff,
 			emissiveIntensity: 7,
