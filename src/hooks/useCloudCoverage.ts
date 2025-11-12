@@ -9,7 +9,7 @@ type UseCloudCoverageResult = {
 
 export function useCloudCoverage(
 	weatherCode: number | null | undefined,
-	defaultCoverage: number = 0.28
+	defaultCoverage: number = 0.0
 ): UseCloudCoverageResult {
 	const description = getWeatherDescription(weatherCode)
 
