@@ -1,13 +1,21 @@
+import { useState } from 'react'
 import useWeather from '../../hooks/useWeather'
 import LocationClock from '../components/LocationClock'
 
 const WeatherDetails = () => {
 	const { data, status, location } = useWeather({ auto: true })
 
-	const temp = data?.now.temperatureC
+	const [tempUnit, setTempUnit] = useState<'F' | 'C'>('F')
+
+	const tempC = data?.now.temperatureC
 	const humidity = data?.now.humidityPct
 	const windMs = data?.now.windSpeedMs
 	const windMph = typeof windMs === 'number' ? (windMs * 2.23694) : null
+
+	const displayedTemp =
+		typeof tempC === 'number'
+			? (tempUnit === 'F' ? Math.round((tempC * 9) / 5 + 32) : Math.round(tempC))
+			: '—'
 
 	return (
 		<section className='weather-overlay' aria-label='Weather overlay'>
@@ -21,10 +29,14 @@ const WeatherDetails = () => {
 					)}
 				</header>
 
-				<main className='weather-main card card--glass'>
-					<div className='weather-main__temp'>{typeof temp === 'number' ? Math.round((temp * 9) / 5 + 32) : '—'}°</div>
-					<div className='weather-main__condition'>{status === 'loading' ? 'Loading…' : 'Updated'}</div>
-				</main>
+				<button
+					className='weather-main card card--glass'
+					onClick={() => setTempUnit((u) => (u === 'F' ? 'C' : 'F'))}
+					aria-label='Toggle temperature unit'
+					title='Click to toggle °F/°C'
+				>
+					<div className='weather-main__temp'>{displayedTemp}<span className='weather-main__condition'>{tempUnit === 'F' ? '°F' : '°C'}</span></div>
+				</button>
 
 				<section className='weather-details card card--glass' aria-label='Current conditions'>
 					<div className='weather-details__item'>Lat/Lon: {location.latitude.toFixed(3)}, {location.longitude.toFixed(3)}</div>

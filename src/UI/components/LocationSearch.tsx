@@ -118,7 +118,7 @@ export default function LocationSearch() {
 			<input
 				type='text'
 				className='input'
-				placeholder='Search city or coordinates'
+				placeholder='Search City or Zip Code'
 				aria-label='Search for a location'
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
