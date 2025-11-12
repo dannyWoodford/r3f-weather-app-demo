@@ -16,7 +16,7 @@ import { Clouds } from '@takram/three-clouds/r3f'
 import { LensFlare, Dithering, Depth, Normal } from '@takram/three-geospatial-effects/r3f'
 import { useControls } from 'leva'
 
-import { getWeatherDescription } from '../../lib/weatherCodes'
+import { useCloudCoverage } from '../../hooks/useCloudCoverage'
 import useWeatherStore from '../../store/GlobalState'
 
 const EnvironmentEffects = () => {
@@ -26,10 +26,10 @@ const EnvironmentEffects = () => {
 
 	const weatherCode = useWeatherStore((s) => s.data?.now.weatherCode ?? null)
 
-	// Compute display condition early so effects can depend on it
-	const desc = getWeatherDescription(weatherCode)
-
 	const defaultCoverage = 0.28;
+
+	// Derive coverage from weather, and whether it's one of the core cloud codes
+	const { coverage: coverageFromWeather } = useCloudCoverage(weatherCode, defaultCoverage)
 
 	// coverage will be synced via Leva setter in an effect below
 	const [{ enabled, animate, ...cloudsProps }, setClouds] = useControls(
@@ -51,18 +51,11 @@ const EnvironmentEffects = () => {
 		{ collapsed: false }
 	)
 
-	// Update Leva coverage control when weather description changes
+	// Update Leva coverage control when weather changes
 	useEffect(() => {
-		const mapping: Record<string, number> = {
-			'Clear sky': 0.1,
-			'Mainly clear': 0.2,
-			'Partly cloudy': 0.35,
-			'Overcast': 0.53,
-		}
-		const next = mapping[desc] ?? defaultCoverage
-		setClouds({ coverage: next })
-	}, [desc, defaultCoverage, setClouds])
-	
+		setClouds({ coverage: coverageFromWeather })
+	}, [coverageFromWeather, setClouds])
+
 	const { correctGeometricError } = useControls(
 		'atmosphere',
 		{
