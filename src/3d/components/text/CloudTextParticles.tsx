@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
-import { useTexture } from '@react-three/drei'
+import React, { useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { InstancedMesh, Object3D } from 'three'
@@ -50,7 +49,6 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 		opacity = 0.7,
 	} = props
 
-	const alphaMap = useTexture('/textures/smoke.png')
 	const instancedRef = useRef<InstancedMesh>(null)
 	const dummy = useMemo(() => new Object3D(), [])
 	const camera = useThree(({ camera }) => camera)
@@ -137,7 +135,7 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 			animate: true,
 		}
 	)
-	
+
 	const animate = () => {
 		if (!instancedRef.current) return
 		const mesh = instancedRef.current
@@ -175,7 +173,7 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 	useFrame(() => {
 		if (animateParticles) {
 			animate()
-		} 
+		}
 	})
 
 	// Anchor: center the text block and account for the component scale
@@ -191,8 +189,6 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 			color: 0xffffff,
 			emissive: 0xffffff,
 			emissiveIntensity: 7,
-			// map: alphaMap,
-			// alphaMap: alphaMap,
 			// depthTest: false,
 			// depthWrite: true,
 			opacity,
@@ -201,7 +197,7 @@ export default function CloudTextParticles(props: CloudTextParticlesProps) {
 			// side: THREE.DoubleSide,
 		})
 		return mat
-	}, [alphaMap, opacity])
+	}, [opacity])
 
 	return (
 		<group position={anchorPosition} scale={scale}>
