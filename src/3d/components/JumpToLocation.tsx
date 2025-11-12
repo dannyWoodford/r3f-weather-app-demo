@@ -15,7 +15,7 @@ const JumpToLocation = () => {
 	const longitude = useWeatherStore(s => s.location.longitude)
 	const initHeading = 65
 	const initPitch = -37
-	const distance = 6151
+	const distance = 4751
 
 
 	const camera = useThree(({ camera }) => camera)
@@ -48,6 +48,7 @@ const JumpToLocation = () => {
 
 	}, [camera, fovValue]);
 
+	// animate the initHeading and initPitch to mouse movments
 
 	return (null)
 }

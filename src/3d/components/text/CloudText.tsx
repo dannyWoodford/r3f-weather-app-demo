@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { Group } from 'three'
 import { Billboard } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
@@ -17,7 +17,20 @@ export default function CloudText() {
 	// Compute display condition early so effects can depend on it
 	const desc = getWeatherDescription(weatherCode)
 	const conditionText = desc.toUpperCase()
-	const shouldShow = hasEnteredApp && desc !== 'Unknown'
+	const baseShouldShow = hasEnteredApp && desc !== 'Unknown'
+
+	// Delay showing the text by X seconds after base condition becomes true
+	const [delayDone, setDelayDone] = useState(false)
+	useEffect(() => {
+		if (!baseShouldShow) {
+			setDelayDone(false)
+			return
+		}
+		const timer = setTimeout(() => setDelayDone(true), 500)
+		return () => clearTimeout(timer)
+	}, [baseShouldShow])
+
+	const shouldShow = baseShouldShow && delayDone
 
 	const textRef = useRef<Group>(null)
 
@@ -33,7 +46,7 @@ export default function CloudText() {
 		const up = locationVector.clone().normalize()
 
 		// set Text x units above the surface at that location
-		const elevated = locationVector.clone().addScaledVector(up, 1850)
+		const elevated = locationVector.clone().addScaledVector(up, 650)
 
 		textRef.current.position.copy(elevated)
 

@@ -36,7 +36,7 @@ const EnvironmentEffects = () => {
 	const { lensFlare, depth, normal } = useControls(
 		'effects',
 		{
-			lensFlare: true,
+			lensFlare: false,
 			depth: false,
       normal: false
 		},
@@ -50,7 +50,7 @@ const EnvironmentEffects = () => {
 			animate: true,
 			coverage: { value: defaultCoverage, min: 0, max: 1, step: 0.01 },
 			qualityPreset: {
-				value: 'high' as const,
+				value: 'low' as const,
 				options: [
 					'low',
 					'medium',

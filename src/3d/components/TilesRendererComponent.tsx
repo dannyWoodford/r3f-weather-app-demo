@@ -19,7 +19,6 @@ const dracoLoader = new DRACOLoader().setDecoderPath('https://www.gstatic.com/dr
 
 import { TileCreasedNormalsPlugin } from '../plugins/TileCreasedNormalsPlugin'
 
-
 export default function TilesRendererComponent() {
 	const assetId = 2275207
 
@@ -30,7 +29,12 @@ export default function TilesRendererComponent() {
 		<group>
 			<TilesRenderer
 			>
-				<TilesPlugin plugin={CesiumIonAuthPlugin} args={[{ apiToken: import.meta.env.VITE_ION_KEY, assetId: assetId, autoRefreshToken: true }]} />
+				<TilesPlugin plugin={CesiumIonAuthPlugin} args={[{
+					apiToken: import.meta.env.VITE_ION_KEY,
+					assetId: assetId,
+					autoRefreshToken: true
+				}]}
+				/>
 				<TilesPlugin plugin={GLTFExtensionsPlugin} dracoLoader={dracoLoader} />
 				<TilesPlugin plugin={TileCompressionPlugin} />
 				<TilesPlugin plugin={UpdateOnChangePlugin} />
