@@ -5,14 +5,16 @@ import { useControls } from 'leva'
 import { PerspectiveCamera } from "three";
 
 import { usePovControls } from '../helpers/usePovControls'
-
 import { CAMERA_PITCH_ANIM_MS } from '../../store/timings'
-import useWeatherStore from '../../store/GlobalState'
 import { useCloudCoverage } from '../../hooks/useCloudCoverage'
+
+import useWeatherStore from '../../store/GlobalState'
 
 const JumpToLocation = () => {
 	const setLocationVector = useWeatherStore(s => s.setLocationVector)
 	const hasEnteredApp = useWeatherStore((s) => s.hasEnteredApp)
+	const flowId = useWeatherStore(s => s.flowId)
+	const markCameraDone = useWeatherStore(s => s.markCameraDone)
 	const phase = useWeatherStore(s => s.phase)
 
 	const latitude = useWeatherStore(s => s.location.latitude)
@@ -113,6 +115,8 @@ const JumpToLocation = () => {
 			if (t >= 1) {
 				animStartRef.current = null
 				currentPitchRef.current = toPitchRef.current
+				// Signal camera animation completion for this flow
+				markCameraDone(flowId)
 			}
 		}
 	})

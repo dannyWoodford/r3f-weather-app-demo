@@ -16,6 +16,7 @@ type WeatherStore = WeatherState & {
 	locationVector: Vector3
 	setLocationVector: (value: Vector3) => void
 	locationVersion: number
+	cameraDoneVersion: number
 
 	// Flow controller
 	flowId: number
@@ -41,6 +42,7 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 	hasEnteredApp: false,
 	locationVector: new Vector3(0, 0, 0),
 	locationVersion: 0,
+	cameraDoneVersion: 0,
 
 	// Flow defaults
 	flowId: 0,
@@ -140,6 +142,9 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 			lastDesc: state.lastDesc,
 			currentDesc: state.currentDesc,
 		})
+
+		// Signal that camera animation just finished
+		set((s) => ({ cameraDoneVersion: s.cameraDoneVersion + 1 }))
 
 		// Only single show-text timer owned by the store
 		const timeoutId = window.setTimeout(() => {
