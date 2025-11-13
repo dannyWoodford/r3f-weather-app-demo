@@ -6,12 +6,14 @@ import { PerspectiveCamera } from "three";
 
 import { usePovControls } from '../helpers/usePovControls'
 
+import { CAMERA_PITCH_ANIM_MS } from '../../store/timings'
 import useWeatherStore from '../../store/GlobalState'
 import { useCloudCoverage } from '../../hooks/useCloudCoverage'
 
 const JumpToLocation = () => {
 	const setLocationVector = useWeatherStore(s => s.setLocationVector)
 	const hasEnteredApp = useWeatherStore((s) => s.hasEnteredApp)
+	const phase = useWeatherStore(s => s.phase)
 
 	const latitude = useWeatherStore(s => s.location.latitude)
 	const longitude = useWeatherStore(s => s.location.longitude)
@@ -25,7 +27,7 @@ const JumpToLocation = () => {
 	const fromPitchRef = useRef(basePitch)
 	const toPitchRef = useRef(basePitch)
 	const animStartRef = useRef<number | null>(null)
-	const animDuration = 1.5 // seconds
+	const animDuration = CAMERA_PITCH_ANIM_MS // seconds
 	const positionedOnceRef = useRef(false)
 
 	// Weather → coverage → recommended pitch
@@ -59,20 +61,33 @@ const JumpToLocation = () => {
 		positionedOnceRef.current = true
 	}, [hasEnteredApp, longitude, latitude, recommendedPitch, camera, setLocationVector])
 
-	// After entering app: start pitch animation on location or weather changes
+	// After entering app: jump immediately on location/weather changes
 	useLayoutEffect(() => {
 		if (!hasEnteredApp) return
 		const getLocVec = new Geodetic(radians(longitude), radians(latitude)).toECEF()
 		locVecRef.current = getLocVec
 
-		// start pitch animation from current to target
-		fromPitchRef.current = currentPitchRef.current
-		toPitchRef.current = recommendedPitch
-		animStartRef.current = performance.now()
+		// keep fromPitchRef so it can animate into place after terrain load
+		new PointOfView(distance, radians(initHeading), radians(currentPitchRef.current)).decompose(
+			getLocVec,
+			camera.position,
+			camera.quaternion,
+			camera.up
+		)
 
 		// set location vector once per location change
 		setLocationVector(getLocVec)
 	}, [hasEnteredApp, longitude, latitude, recommendedPitch, setLocationVector])
+
+	// Start pitch animation only after terrain has loaded
+	useEffect(() => {
+		if (!hasEnteredApp) return
+		if (phase !== 'animatingCamera') return
+		// start pitch animation from current to target
+		fromPitchRef.current = currentPitchRef.current
+		toPitchRef.current = recommendedPitch
+		animStartRef.current = performance.now()
+	}, [hasEnteredApp, phase, recommendedPitch])
 
 	// Drive camera pitch animation
 	useFrame(() => {
@@ -82,7 +97,7 @@ const JumpToLocation = () => {
 
 		if (animStartRef.current != null) {
 			const now = performance.now()
-			const t = Math.min(1, (now - animStartRef.current) / (animDuration * 1000))
+			const t = Math.min(1, (now - animStartRef.current) / (animDuration))
 			// easeInOut
 			const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 			const pitchDeg = fromPitchRef.current + (toPitchRef.current - fromPitchRef.current) * ease

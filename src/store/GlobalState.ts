@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { Vector3 } from 'three'
 import type { WeatherData, WeatherState, Coordinates } from '../types/weather'
-import { CLOUD_TEXT_BASE_DELAY_MS } from '../config/timings'
+import { CLOUD_TEXT_BASE_DELAY_MS } from './timings'
+import { getWeatherDescription } from '../lib/weatherCodes'
 
 type FlowPhase = 'idle' | 'loadingTerrain' | 'animatingCamera' | 'showingText'
 
@@ -14,6 +15,7 @@ type WeatherStore = WeatherState & {
 	setHasEnteredApp: (value: boolean) => void
 	locationVector: Vector3
 	setLocationVector: (value: Vector3) => void
+	locationVersion: number
 
 	// Flow controller
 	flowId: number
@@ -38,6 +40,7 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 	lastUpdated: null,
 	hasEnteredApp: false,
 	locationVector: new Vector3(0, 0, 0),
+	locationVersion: 0,
 
 	// Flow defaults
 	flowId: 0,
@@ -58,10 +61,20 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 		})),
 
 	setLoading: () => set({ status: 'loading', error: null }),
-	setSuccess: (data) => set({ data, status: 'success', error: null, lastUpdated: Date.now() }),
+	setSuccess: (data) => {
+		// Update weather data
+		set({ data, status: 'success', error: null, lastUpdated: Date.now() })
+		// Begin flow once we know the description
+		const desc = getWeatherDescription(data?.now?.weatherCode)
+		get().beginFlow(desc)
+	},
 	setError: (message) => set({ status: 'error', error: message }),
 	setHasEnteredApp: (value) => set({ hasEnteredApp: value }),
-	setLocationVector: (value) => set({ locationVector: value }),
+	setLocationVector: (value) =>
+		set((state) => ({
+			locationVector: value,
+			locationVersion: state.locationVersion + 1,
+		})),
 
 	// Flow actions
 	// Flow overview (single source of truth for timings/phases):

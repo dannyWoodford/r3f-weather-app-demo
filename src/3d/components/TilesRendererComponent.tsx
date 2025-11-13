@@ -1,5 +1,4 @@
-import { Vector3 } from 'three'
-
+import React, { useCallback, useEffect, useRef } from 'react'
 import {
 	TilesPlugin,
 	TilesRenderer,
@@ -14,13 +13,12 @@ import {
 	TilesFadePlugin,
 	GLTFExtensionsPlugin,
 } from '3d-tiles-renderer/plugins';
+import { radians } from '@takram/three-geospatial'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
-import { radians } from '@takram/three-geospatial'
 const dracoLoader = new DRACOLoader().setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 
 import { TileCreasedNormalsPlugin } from '../plugins/TileCreasedNormalsPlugin'
-import React, { useCallback, useEffect, useRef } from 'react'
 import useWeatherStore from '../../store/GlobalState'
 
 export default function TilesRendererComponent() {
@@ -30,44 +28,49 @@ export default function TilesRendererComponent() {
 	// const assetId = 3812
 
 	// Track current location and ensure handlers fire once per location change
-	const locationVector = useWeatherStore(s => s.locationVector)
+	const locationVersion = useWeatherStore(s => s.locationVersion)
 	const flowId = useWeatherStore(s => s.flowId)
+	const phase = useWeatherStore(s => s.phase)
 	const markTerrainReady = useWeatherStore(s => s.markTerrainReady)
 	const setSpinnerVisible = useWeatherStore(s => s.setSpinnerVisible)
+	const spinnerVisible = useWeatherStore(s => s.spinnerVisible)
 
-	const lastKeyRef = useRef<Vector3>(new Vector3(0, 0, 0))
 	const hasStartFiredRef = useRef(false)
 	const hasEndFiredRef = useRef(false)
 
 	useEffect(() => {
-		if (!locationVector.equals(lastKeyRef.current)) {
-			lastKeyRef.current = locationVector
-			hasStartFiredRef.current = false
-			hasEndFiredRef.current = false
-		}
-	}, [locationVector])
+		hasStartFiredRef.current = false
+		hasEndFiredRef.current = false
+	}, [locationVersion])
 
 	const handleTilesLoadStart = useCallback(() => {
 		// Only consider the first start per location
 		if (hasStartFiredRef.current) return
+		// Only show spinner for the active flow
+		if (phase !== 'loadingTerrain') return
 		hasStartFiredRef.current = true
-		console.log('[Tiles] onTilesLoadStart (once per location) →', {
-			location: lastKeyRef.current.toArray(),
-			flowId,
-		})
+		// console.log('[Tiles] onTilesLoadStart (once per location) →', {
+		// 	flowId,
+		// })
 		setSpinnerVisible(true)
-	}, [flowId, setSpinnerVisible])
+	}, [flowId, phase, setSpinnerVisible])
 
 	const handleTilesLoadEnd = useCallback(() => {
 		// Only consider the first load end per location
 		if (hasEndFiredRef.current) return
+		// Only complete terrain step for the active flow
+		if (phase !== 'loadingTerrain') {
+			// Initial load case (no active flow): ensure spinner hides
+			if (spinnerVisible) setSpinnerVisible(false)
+			hasEndFiredRef.current = true
+			return
+		}
 		hasEndFiredRef.current = true
-		console.log('[Tiles] onTilesLoadEnd (once per location) →', {
-			location: lastKeyRef.current.toArray(),
-			flowId,
-		})
+		// console.log('[Tiles] onTilesLoadEnd (once per location) →', {
+		// 	flowId,
+		// })
 		markTerrainReady(flowId)
-	}, [flowId, markTerrainReady])
+	}, [flowId, phase, spinnerVisible, setSpinnerVisible, markTerrainReady])
 
 	return (
 		<group>
