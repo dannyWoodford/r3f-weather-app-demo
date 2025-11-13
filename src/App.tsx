@@ -7,6 +7,7 @@ import LevaConfig from './LevaConfig'
 import Scene from './3d/Scene'
 import UIContainer from './UI/UIContainer'
 
+
 // declare module '@react-three/fiber' {
 // 	interface ThreeElements extends ThreeToJSXElements<typeof THREE> { }
 // }
@@ -14,13 +15,13 @@ import UIContainer from './UI/UIContainer'
 // extend(THREE as any)
 
 export default function App() {
-	const gl = useMemo(() => ({ 
-		depth: false, 
+	const gl = useMemo(() => ({
+		depth: false,
 	}), []);
 
-	const camera = useMemo(() => ({ 
-		near: 0.01, 
-		far: 4e5, 
+	const camera = useMemo(() => ({
+		near: 0.01,
+		far: 4e5,
 		fov: 70,
 		// See the Clouds/Basic story for deriving ECEF coordinates and rotation.
 		// position: [4529893.894855564, 2615333.425024031, 3638042.815326614],
@@ -40,9 +41,9 @@ export default function App() {
 				// 	await renderer.init()
 				// 	return renderer
 				// }}
-				
+
 				// shadows
-				gl={gl} 
+				gl={gl}
 				camera={camera}
 			>
 				<Scene />

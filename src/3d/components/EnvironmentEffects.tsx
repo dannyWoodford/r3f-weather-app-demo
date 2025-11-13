@@ -16,7 +16,9 @@ import { Clouds } from '@takram/three-clouds/r3f'
 import { LensFlare, Dithering, Depth, Normal } from '@takram/three-geospatial-effects/r3f'
 import { useControls } from 'leva'
 
+import { CLOUDS_COVERAGE_ANIM_MS } from '../../store/timings'
 import { useCloudCoverage } from '../../hooks/useCloudCoverage'
+
 import useWeatherStore from '../../store/GlobalState'
 
 const EnvironmentEffects = () => {
@@ -63,13 +65,19 @@ const EnvironmentEffects = () => {
 		{ collapsed: false }
 	)
 
-	// When weather changes, sync GUI once and start animation from 0.0 to target
+	// Start cloud coverage animation when camera finishes animating for the current flow
+	const cameraDoneVersion = useWeatherStore((s) => s.cameraDoneVersion)
+	const processedCameraDoneRef = useRef(0)
 	useEffect(() => {
+		if (cameraDoneVersion === processedCameraDoneRef.current) return
+		processedCameraDoneRef.current = cameraDoneVersion
+		// Animate from current coverage to target
 		targetCoverageRef.current = coverageFromWeather
-		fromCoverageRef.current = 0.0
+		fromCoverageRef.current = (cloudsRef.current?.coverage ?? 0) as number
 		animStartRef.current = performance.now()
+		// Sync the control to the target
 		setClouds({ coverage: coverageFromWeather })
-	}, [coverageFromWeather, setClouds])
+	}, [cameraDoneVersion])
 
 	const { correctGeometricError } = useControls(
 		'atmosphere',
@@ -104,9 +112,9 @@ const EnvironmentEffects = () => {
 	useFrame(() => {
 		// Drive Clouds coverage animation imperatively without React updates
 		if (animStartRef.current != null && cloudsRef.current) {
-			const duration = 3.2 // seconds
+			const duration = CLOUDS_COVERAGE_ANIM_MS // seconds
 			const now = performance.now()
-			const elapsed = (now - (animStartRef.current as number)) / 1000
+			const elapsed = (now - (animStartRef.current as number))
 			const t = Math.min(1, elapsed / duration)
 			const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 			const value = fromCoverageRef.current + (targetCoverageRef.current - fromCoverageRef.current) * ease
@@ -133,7 +141,6 @@ const EnvironmentEffects = () => {
 	}, [gl, exposure]);
 
 	return (
-
 		<EffectComposer
 			ref={composerRef}
 			multisampling={0}
