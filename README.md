@@ -6,7 +6,6 @@
 
 ## Caveats
 
-- Sun position is currently fixed. Until dynamic sun positioning is implemented, scenes outside the Western Hemisphere may appear at night. Locations in Asia, Western Europe, and Australia will look dark; the U.S. West Coast and parts of Europe may appear near sunrise/sunset.
 - Cesium ion token required: set `VITE_ION_KEY` in your environment for tiles to load.
 - Performance: 
 Volumetric effects and 3D tiles are GPU‑intensive; desktop Chrome is recommended. If performance allows, set Cloud quality to “high” or “ultra” to enable volumetric light, and optionally enable “Lens Flare” in the Leva Effects panel.
