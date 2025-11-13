@@ -133,7 +133,6 @@ const EnvironmentEffects = () => {
 	}, [gl, exposure]);
 
 	return (
-
 		<EffectComposer
 			ref={composerRef}
 			multisampling={0}
