@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Group } from 'three'
 import { Billboard } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
@@ -17,20 +17,10 @@ export default function CloudText() {
 	// Compute display condition early so effects can depend on it
 	const desc = getWeatherDescription(weatherCode)
 	const conditionText = desc.toUpperCase()
-	const baseShouldShow = hasEnteredApp && desc !== 'Unknown'
+	const cloudTextVisible = useWeatherStore((s) => s.cloudTextVisible)
+	const baseShouldShow = hasEnteredApp && cloudTextVisible && desc !== 'Unknown'
 
-	// Delay showing the text by X seconds after base condition becomes true
-	const [delayDone, setDelayDone] = useState(false)
-	useEffect(() => {
-		if (!baseShouldShow) {
-			setDelayDone(false)
-			return
-		}
-		const timer = setTimeout(() => setDelayDone(true), 500)
-		return () => clearTimeout(timer)
-	}, [baseShouldShow])
-
-	const shouldShow = baseShouldShow && delayDone
+	const shouldShow = baseShouldShow
 
 	const textRef = useRef<Group>(null)
 

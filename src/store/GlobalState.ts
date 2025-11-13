@@ -110,7 +110,7 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 		}
 		set((state) => {
 			const nextFlowId = state.flowId + 1
-			console.log('[Flow] beginFlow →', { nextFlowId, currentDesc })
+			// console.log('[Flow] beginFlow →', { nextFlowId, currentDesc })
 			return {
 				flowId: nextFlowId,
 				currentDesc,
@@ -125,32 +125,23 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 	markTerrainReady: (flowId) => {
 		const state = get()
 		if (flowId !== state.flowId) return
-		console.log('[Flow] markTerrainReady →', { flowId })
+		// console.log('[Flow] markTerrainReady →', { flowId })
 		set({
 			phase: 'animatingCamera',
 			// spinner can go away as soon as terrain is ready
 			spinnerVisible: false,
 		})
-	},
 
-	markCameraDone: (flowId) => {
-		const state = get()
-		if (flowId !== state.flowId) return
-		console.log('[Flow] markCameraDone → scheduling showText', {
-			flowId,
-			delayMs: CLOUD_TEXT_BASE_DELAY_MS,
-			lastDesc: state.lastDesc,
-			currentDesc: state.currentDesc,
-		})
-
-		// Signal that camera animation just finished
-		set((s) => ({ cameraDoneVersion: s.cameraDoneVersion + 1 }))
-
-		// Only single show-text timer owned by the store
+		// Schedule CloudText show after tiles load + base delay
+		// Cancel any previous pending text timer first
+		const prev = get().pendingTextTimeoutId
+		if (prev != null) {
+			clearTimeout(prev)
+		}
 		const timeoutId = window.setTimeout(() => {
-			// ensure flow hasn't changed while waiting
+			// ensure this flow is still current
 			if (flowId !== get().flowId) return
-			console.log('[Flow] showText →', { flowId })
+			// console.log('[Flow] showText (after tiles) →', { flowId })
 			set((s) => ({
 				phase: 'showingText',
 				cloudTextVisible: true,
@@ -158,18 +149,31 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 				pendingTextTimeoutId: null,
 			}))
 		}, CLOUD_TEXT_BASE_DELAY_MS)
-
 		set({ pendingTextTimeoutId: timeoutId })
+	},
+
+	markCameraDone: (flowId) => {
+		const state = get()
+		if (flowId !== state.flowId) return
+		// console.log('[Flow] markCameraDone → camera finished', {
+		// 	flowId,
+		// 	lastDesc: state.lastDesc,
+		// 	currentDesc: state.currentDesc,
+		// })
+
+		// Signal that camera animation just finished
+		set((s) => ({ cameraDoneVersion: s.cameraDoneVersion + 1 }))
+		// Do not schedule text here anymore; handled in markTerrainReady
 	},
 
 	cancelFlow: (flowId) => {
 		const state = get()
 		// Only cancel if this flow is still current
 		if (flowId !== state.flowId) return
-		console.log('[Flow] cancelFlow →', { flowId })
-		if (state.pendingTextTimeoutId != null) {
-			clearTimeout(state.pendingTextTimeoutId)
-		}
+		// console.log('[Flow] cancelFlow →', { flowId })
+		// if (state.pendingTextTimeoutId != null) {
+		// 	clearTimeout(state.pendingTextTimeoutId)
+		// }
 		set({
 			pendingTextTimeoutId: null,
 			phase: 'idle',
