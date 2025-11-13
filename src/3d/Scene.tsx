@@ -10,19 +10,19 @@ import TilesRendererComponent from './components/TilesRendererComponent'
 import JumpToLocation from './components/JumpToLocation'
 import EnvironmentEffects from './components/EnvironmentEffects'
 import CloudText from './components/text/CloudText'
+import useWeatherStore from '../store/GlobalState'
 
 export default function Scene() {
 	const atmosphereRef = useRef<AtmosphereApi>(null)
 
-	const date = Date.parse('2025-11-08T15:45:00Z')
+	const westernHemisphereDate = Date.parse('2025-11-08T15:45:00Z')
+	const easternHemisphereDate = Date.parse('2025-07-08T09:00:00Z')
 
-	// useFrame(() => {
-	// 	const atmosphere = atmosphereRef.current;
-	// 	if (atmosphere == null) {
-	// 		return;
-	// 	}
-	// 	atmosphere.updateByDate(date);
-	// });
+	const longitude = useWeatherStore(s => s.location.longitude)
+	const isEastern = longitude > 0
+	const date = isEastern
+		? easternHemisphereDate
+		: westernHemisphereDate
 
 	return (
 		<group>
