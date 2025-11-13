@@ -42,26 +42,31 @@ export default function CloudText() {
 		if (!textRef.current || !locationVector) return
 		if (locationVector.lengthSq() === 0) return
 
-		// Outward unit normal from Earth's center through the location
-		const up = locationVector.clone().normalize()
+		const orientOnce = () => {
+			// Outward unit normal from Earth's center through the location
+			const up = locationVector.clone().normalize()
 
-		// set Text x units above the surface at that location
-		const elevated = locationVector.clone().addScaledVector(up, 450)
+			// set Text x units above the surface at that location
+			const elevated = locationVector.clone().addScaledVector(up, 450)
 
-		textRef.current.position.copy(elevated)
+			textRef.current!.position.copy(elevated)
 
-		// One-time orientation:
-		// - Keep upright by aligning local up to surface normal
-		// - Face the camera along the tangent plane (no pitch/roll)
-		const obj = textRef.current
-		const upVec = up.clone().normalize()
-		obj.up.copy(upVec)
-		const toCam = camera.position.clone().sub(obj.position)
-		const planarDir = toCam.clone().projectOnPlane(upVec)
-		if (planarDir.lengthSq() > 0) {
-			const lookTarget = obj.position.clone().add(planarDir)
-			obj.lookAt(lookTarget)
+			// One-time orientation:
+			// - Keep upright by aligning local up to surface normal
+			// - Face the camera along the tangent plane (no pitch/roll)
+			const obj = textRef.current!
+			const upVec = up.clone().normalize()
+			obj.up.copy(upVec)
+			const toCam = camera.position.clone().sub(obj.position)
+			const planarDir = toCam.clone().projectOnPlane(upVec)
+			if (planarDir.lengthSq() > 0) {
+				const lookTarget = obj.position.clone().add(planarDir)
+				obj.lookAt(lookTarget)
+			}
 		}
+
+		// Orient immediately on location change
+		orientOnce()
 	}, [locationVector, shouldShow])
 
 	const { followCamera } = useControls(
