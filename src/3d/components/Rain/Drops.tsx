@@ -163,8 +163,21 @@ export const Drops = React.forwardRef<THREE.InstancedMesh, DropsProps>(
 		const dropsGroupRef = React.useRef<THREE.Group>(null)
 		const camera = useThree(({ camera }) => camera)
 
+		React.useEffect(() => {
+			if (!shouldShow) return
+			if (!dropsGroupRef.current || !locationVector) return
+			if (locationVector.lengthSq() === 0) return
+
+			// Outward unit normal from Earth's center through the location
+			const up = locationVector.clone().normalize()
+
+			// set Text x units above the surface at that location
+			const elevated = locationVector.clone().addScaledVector(up, 100)
+
+			dropsGroupRef.current.position.copy(elevated)
+		}, [camera, locationVector, shouldShow])
+
 		useFrame(() => {
-			// Only position/orient when the text is actually being shown
 			if (!shouldShow) return
 			if (!dropsGroupRef.current || !locationVector) return
 			if (locationVector.lengthSq() === 0) return
@@ -172,12 +185,7 @@ export const Drops = React.forwardRef<THREE.InstancedMesh, DropsProps>(
 			const orientOnce = () => {
 				// Outward unit normal from Earth's center through the location
 				const up = locationVector.clone().normalize()
-
-				// set Text x units above the surface at that location
-				const elevated = locationVector.clone().addScaledVector(up, 100)
-
-				dropsGroupRef.current!.position.copy(elevated)
-
+				
 				// One-time orientation:
 				// - Keep upright by aligning local up to surface normal
 				// - Face the camera along the tangent plane (no pitch/roll)
@@ -194,7 +202,7 @@ export const Drops = React.forwardRef<THREE.InstancedMesh, DropsProps>(
 
 			// Orient immediately on location change
 			orientOnce()
-		}, [locationVector])
+		})
 
 		return (
 			<>
