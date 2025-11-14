@@ -185,7 +185,7 @@ export const Drops = React.forwardRef<THREE.InstancedMesh, DropsProps>(
 			const orientOnce = () => {
 				// Outward unit normal from Earth's center through the location
 				const up = locationVector.clone().normalize()
-				
+
 				// One-time orientation:
 				// - Keep upright by aligning local up to surface normal
 				// - Face the camera along the tangent plane (no pitch/roll)
@@ -207,7 +207,7 @@ export const Drops = React.forwardRef<THREE.InstancedMesh, DropsProps>(
 		return (
 			<>
 				{shouldShow && (
-					<group ref={dropsGroupRef} scale={[3000, 500, 3000]}>
+					<group ref={dropsGroupRef} scale={[8000, 500, 8000]}>
 						{/* placement helper */}
 						{/* <mesh position={[0, 0, 0]}>
 							<planeGeometry args={[10, 10]} />
@@ -227,7 +227,7 @@ export const Drops = React.forwardRef<THREE.InstancedMesh, DropsProps>(
 							args={[null!, null!, count]}
 							renderOrder={2}
 						>
-							<planeGeometry args={[0.25, 1.0]} />
+							<planeGeometry args={[0.1, 2.0]} />
 							<CSM
 								key={vertexShader + fragmentShader}
 								baseMaterial={THREE.MeshBasicMaterial}
