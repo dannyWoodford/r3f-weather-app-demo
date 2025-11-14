@@ -1,6 +1,8 @@
 import React, { useRef, Fragment, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { EffectComposer, SMAA, ToneMapping } from '@react-three/postprocessing'
+import {
+	EffectComposer, SMAA, ToneMapping, Bloom,
+	BrightnessContrast } from '@react-three/postprocessing'
 import {
 	ToneMappingMode,
 	EffectMaterial,
@@ -145,6 +147,7 @@ const EnvironmentEffects = () => {
 			ref={composerRef}
 			multisampling={0}
 			enableNormalPass
+			// disableNormalPass
 		>
 			<Fragment
 				// Effects are order-dependant; we need to reconstruct the nodes.
@@ -185,6 +188,8 @@ const EnvironmentEffects = () => {
 								<ToneMapping mode={ToneMappingMode.LINEAR} />
 								<SMAA />
 								<Dithering />
+								{/* <BrightnessContrast brightness={0.05} contrast={0.2} /> */}
+								{/* <Bloom luminanceThreshold={2} mipmapBlur intensity={1} /> */}
 							</>
 						)}
 					</>

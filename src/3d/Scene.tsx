@@ -4,6 +4,11 @@ import {
 	type AtmosphereApi,
 } from '@takram/three-atmosphere/r3f'
 // import { useFrame } from '@react-three/fiber'
+import {
+	Bloom,
+	BrightnessContrast,
+	EffectComposer,
+} from "@react-three/postprocessing";
 
 import Stats from './components/Stats'
 import TilesRendererComponent from './components/TilesRendererComponent'
@@ -11,6 +16,9 @@ import JumpToLocation from './components/JumpToLocation'
 import EnvironmentEffects from './components/EnvironmentEffects'
 import CloudText from './components/text/CloudText'
 import useWeatherStore from '../store/GlobalState'
+
+import { Rain } from "./components/Rain";
+import { useMakeRain } from "./components/Rain/useMakeRain";
 
 export default function Scene() {
 	const atmosphereRef = useRef<AtmosphereApi>(null)
@@ -24,6 +32,8 @@ export default function Scene() {
 		? easternHemisphereDate
 		: westernHemisphereDate
 
+	const [rainProgressRef, onRainStart, rainStarted] = useMakeRain();
+
 	return (
 		<group>
 			<Stats />
@@ -33,6 +43,11 @@ export default function Scene() {
 				correctAltitude={true}
 				date={date}
 			>
+		
+				<Rain rainProgressRef={rainProgressRef}>
+					{/* <Floor rainProgressRef={rainProgressRef} /> */}
+				</Rain>
+
 				<TilesRendererComponent />
 				<JumpToLocation />
 
@@ -41,6 +56,10 @@ export default function Scene() {
 				</Suspense>
 
 				<EnvironmentEffects />
+				{/* <EffectComposer disableNormalPass>
+					<BrightnessContrast brightness={0.05} contrast={0.2} />
+					<Bloom luminanceThreshold={2} mipmapBlur intensity={1} />
+				</EffectComposer> */}
 			</Atmosphere>
 		</group>
 	)
