@@ -1,7 +1,10 @@
 import { create } from 'zustand'
 import { Vector3 } from 'three'
 import type { WeatherData, WeatherState, Coordinates } from '../types/weather'
-import { CLOUD_TEXT_BASE_DELAY_MS } from './timings'
+import {
+	RAIN_COVERAGE_ANIM_MS,
+	CLOUD_TEXT_BASE_DELAY_MS,
+} from './timings'
 import { getWeatherDescription } from '../lib/weatherCodes'
 
 type FlowPhase = 'idle' | 'loadingTerrain' | 'animatingCamera' | 'showingText'
@@ -26,6 +29,8 @@ type WeatherStore = WeatherState & {
 	lastDesc: string | null
 	currentDesc: string | null
 	pendingTextTimeoutId: number | null
+	pendingRainTimeoutId: number | null
+	rainReadyVersion: number
 	setSpinnerVisible: (value: boolean) => void
 	beginFlow: (currentDesc: string) => void
 	markTerrainReady: (flowId: number) => void
@@ -52,6 +57,8 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 	lastDesc: null,
 	currentDesc: null,
 	pendingTextTimeoutId: null,
+	pendingRainTimeoutId: null,
+	rainReadyVersion: 0,
 
 	setLocation: ({ latitude, longitude, label }) =>
 		set((state) => ({
@@ -103,10 +110,14 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 	//
 	setSpinnerVisible: (value) => set({ spinnerVisible: value }),
 	beginFlow: (currentDesc) => {
-		// cancel any previous text timers
+		// cancel any previous timers
 		const prev = get().pendingTextTimeoutId
 		if (prev != null) {
 			clearTimeout(prev)
+		}
+		const prevRain = get().pendingRainTimeoutId
+		if (prevRain != null) {
+			clearTimeout(prevRain)
 		}
 		set((state) => {
 			const nextFlowId = state.flowId + 1
@@ -118,6 +129,8 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 				spinnerVisible: true,
 				cloudTextVisible: false,
 				pendingTextTimeoutId: null,
+				pendingRainTimeoutId: null,
+				rainReadyVersion: 0,
 			}
 		})
 	},
@@ -162,7 +175,22 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 		// })
 
 		// Signal that camera animation just finished
-		set((s) => ({ cameraDoneVersion: s.cameraDoneVersion + 1 }))
+		const prevRain = state.pendingRainTimeoutId
+		if (prevRain != null) {
+			clearTimeout(prevRain)
+		}
+
+		const nextCameraVersion = state.cameraDoneVersion + 1
+		set({ cameraDoneVersion: nextCameraVersion })
+
+		const timeoutId = window.setTimeout(() => {
+			if (flowId !== get().flowId) return
+			set((s) => ({
+				rainReadyVersion: nextCameraVersion,
+				pendingRainTimeoutId: null,
+			}))
+		}, RAIN_COVERAGE_ANIM_MS)
+		set({ pendingRainTimeoutId: timeoutId })
 		// Do not schedule text here anymore; handled in markTerrainReady
 	},
 
@@ -171,11 +199,15 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
 		// Only cancel if this flow is still current
 		if (flowId !== state.flowId) return
 		// console.log('[Flow] cancelFlow →', { flowId })
-		// if (state.pendingTextTimeoutId != null) {
-		// 	clearTimeout(state.pendingTextTimeoutId)
-		// }
+		if (state.pendingTextTimeoutId != null) {
+			clearTimeout(state.pendingTextTimeoutId)
+		}
+		if (state.pendingRainTimeoutId != null) {
+			clearTimeout(state.pendingRainTimeoutId)
+		}
 		set({
 			pendingTextTimeoutId: null,
+			pendingRainTimeoutId: null,
 			phase: 'idle',
 			spinnerVisible: false,
 			cloudTextVisible: false,

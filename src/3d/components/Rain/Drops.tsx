@@ -19,15 +19,13 @@ export const Drops = React.forwardRef<THREE.InstancedMesh, DropsProps>(
 		const weatherCode = useWeatherStore((s) => s.data?.now.weatherCode ?? null)
 
 		// Compute display condition early so effects can depend on it
-		// const desc = getWeatherDescription(weatherCode)
-		// const cloudTextVisible = useWeatherStore((s) => s.cloudTextVisible)
-		// const cameraDoneVersion = useWeatherStore((s) => s.cameraDoneVersion)
+		const desc = getWeatherDescription(weatherCode)
+		const cloudTextVisible = useWeatherStore((s) => s.cloudTextVisible)
+		const cameraDoneVersion = useWeatherStore((s) => s.cameraDoneVersion)
 
-		// const baseShouldShow = hasEnteredApp && cameraDoneVersion && desc !== 'Unknown'
+		const baseShouldShow = hasEnteredApp && cameraDoneVersion && desc !== 'Unknown'
 
-		// const shouldShow = baseShouldShow
-		const shouldShow = true
-
+		const shouldShow = baseShouldShow
 
 
 		const dropsRef = React.useRef<THREE.InstancedMesh>(null!);
